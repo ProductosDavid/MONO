@@ -49,7 +49,7 @@ PROGRAMA ESTRATÉGICO DE INVESTIGACIÓN Y DESARROLLO PARA EL SECTOR COLOMBIANO D
 
 Proyecto MONO-DAVID.
 
-Proyecto cofinanciado por Colciencias - Programación Nacional de Ciencia, Tecnología e Innovación en TIC.
+Proyecto cofinanciado por Colciencias - Programa Nacional de Ciencia, Tecnología e Innovación en TIC.
 
 ### Directores
 - Product Owner: Pablo Alejandro Figueroa  - pfiguero@uniandes.edu.co
