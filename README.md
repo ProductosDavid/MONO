@@ -48,7 +48,8 @@ Grupo de Investigación IMAGINE.
 PROGRAMA ESTRATÉGICO DE INVESTIGACIÓN Y DESARROLLO PARA EL SECTOR COLOMBIANO DE LA ANIMACIÓN Y VIDEOJUEGOS.
 
 Proyecto MONO-DAVID.
-Proyecto en colaboración con Colciencias.
+
+Proyecto cofinanciado por Colciencias - Programación Nacional de Ciencia, Tecnología e Innovación en TIC.
 
 ### Directores
 - Product Owner: Pablo Alejandro Figueroa  - pfiguero@uniandes.edu.co
