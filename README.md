@@ -4,6 +4,10 @@ El Sistema MONO es una iniciativa que surge como un apoyo a la industria de cont
 
 MONO facilita esto, permitiéndoles integrar, controlar y optimizar sus procesos de desarrollo, y así como también, hacer seguimiento en la utilización de los recursos, los tiempos de desarrollo, las responsabilidades y los costos. 
 
+# MONO como Software
+
+Mono es un software open source (código abierto), bajo licencia GPLv3, diseñado para integrar, controlar y optimizar procesos de desarrollo de contenidos digitales, además de hacer seguimiento en la utilización de recursos, tiempos de desarrollo, responsabilidades y costos de proyectos que son ejecutados de forma colaborativa entre distintas empresas aliadas.
+
 ## ¿Cuál es el objetivo de MONO?
 
 El objetivo que tiene Mono es proveer una herramienta que facilite la generación de contenidos digitales de forma colaborativa, planificada y de bajo costo entre pequeñas, medianas y grandes empresas del sector digital Colombiano. 
