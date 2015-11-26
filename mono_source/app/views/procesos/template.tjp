@@ -1,0 +1,463 @@
+//
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+
+        project acso "Run Lucho Run!" 2013-11-25 - 2013-12-30 {
+          timezone "America/Bogota"
+          timeformat "%Y-%m-%d %H:%M:%S %z"
+          numberformat "-" "" "," "." 1
+          currencyformat "("  ")" "," "." 0
+          now 2014-08-03-16:00
+          currency "COP"
+
+          alertlevels green "Correcto" "#2AA46C",
+          blue "Advertencia" "#457CC4",
+          yellow "Medio" "#F1D821",
+          orange "Alto" "#F99836",
+          red "Severo" "#E43745"
+
+          scenario plan "Plan" {
+              scenario delayed "Delayed"
+              projection
+            }
+            extend resource {
+              text Phone "Phone"
+            }
+          }
+
+          rate 0.0
+          flags equipo
+          flags persona
+          flags material
+          flags cosas
+
+        account cost "Project Cost" { 
+       account tipo_recH36 "Diseñador grafico"
+       account tipo_recH37 "Artista plástico"
+       account tipo_recH38 "Programador de Software"
+       account tipo_recH39 "Director de arte"
+       account tipo_recH40 "Director de proyecto"
+       account tipo_recH41 "Animador"
+       account tipo_recM42 "Estación de trabajo"
+       account tipo_recM43 "Equipo de computo"
+       account tipo_recM44 "Licencia de software"
+       account tipo_recM45 "Telecomunicaciones"
+       account tipo_recH46 "Guionista"
+       account tipo_recM47 "Papeleria"
+       account tipo_recH48 "Líder Técnico"
+       account tipo_recH49 "Dibujante"
+       account tipo_recM51 "Material de dibujo"
+       account tipo_recH52 "Productor"
+       account tipo_recM53 "Material de oficina"
+       account tipo_recM54 "Equipos electrónicos"
+       account tipo_recH55 "Asistente 3"
+       account tipo_recH56 "Nuevo rol"
+       account tipo_recH57 "Nuevo rol2"
+       account tipo_recH58 "Nuevo rol3"
+       account tipo_recH59 "Rol nuevo"
+       account tipo_recH60 "Rol nuevo 2"
+       account tipo_recH61 "Otro rol"
+       account tipo_recM62 "tiporec1"
+       account tipo_recM63 "tiporec2"
+ }
+
+        account rev "Payments"
+        balance cost rev
+
+        resource boss "Administrador de ColAnimation" {
+          email "35"
+          Phone "35"
+          rate 0.0
+        }
+
+        resource undefined "No Definido" {
+          email "No Definido"
+          Phone "No Definido"
+          rate 0
+        }
+resource tipo_recH36 "Diseñador grafico" {
+ flags equipo }
+resource tipo_recH37 "Artista plástico" {
+resource recH44 "Daniela Maria" {
+                   email "dcorrea@colanimation.com"
+                   Phone "Daniela Maria"
+                   rate 0
+                   flags persona }
+ flags equipo }
+resource tipo_recH38 "Programador de Software" {
+resource recH48 "Fabio Alberti" {
+                   email "fcomesana@colgames.com"
+                   Phone "Fabio Alberti"
+                   rate 0
+                   flags persona }
+ flags equipo }
+resource tipo_recH39 "Director de arte" {
+resource recH55 "Oscar Javier" {
+                   email "osalazar@colgames.com"
+                   Phone "Oscar Javier"
+                   rate 0
+                   flags persona }
+resource recH43 "Leonel Esteban" {
+                   email "lruiz@colanimation.com"
+                   Phone "Leonel Esteban"
+                   rate 0
+                   flags persona }
+ flags equipo }
+resource tipo_recH40 "Director de proyecto" {
+resource recH46 "Dario Luis" {
+                   email "dgonzales@colgames.com"
+                   Phone "Dario Luis"
+                   rate 0
+                   flags persona }
+resource recH45 "Rafael Roque" {
+                   email "rromano@colanimation.com"
+                   Phone "Rafael Roque"
+                   rate 0
+                   flags persona }
+ flags equipo }
+resource tipo_recH41 "Animador" {
+resource recH42 "Paola Andrea" {
+                   email "pmolina@colanimation.com"
+                   Phone "Paola Andrea"
+                   rate 0
+                   flags persona }
+ flags equipo }
+resource tipo_recH46 "Guionista" {
+resource recH56 "Roberto Manuel" {
+                   email "rdorado@colgames.com"
+                   Phone "Roberto Manuel"
+                   rate 0
+                   flags persona }
+resource recH40 "Luis Andres" {
+                   email "lgomez@colanimation.com"
+                   Phone "Luis Andres"
+                   rate 0
+                   flags persona }
+ flags equipo }
+resource tipo_recH48 "Líder Técnico" {
+resource recH53 "Raul Daniel" {
+                   email "rgarabito@colgames.com"
+                   Phone "Raul Daniel"
+                   rate 0
+                   flags persona }
+ flags equipo }
+resource tipo_recH49 "Dibujante" {
+resource recH54 "Laura Maria" {
+                   email "lpoveda@colgames.com"
+                   Phone "Laura Maria"
+                   rate 0
+                   flags persona }
+ flags equipo }
+resource tipo_recH52 "Productor" {
+ flags equipo }
+resource tipo_recH55 "Asistente 3" {
+ flags equipo }
+resource tipo_recH56 "Nuevo rol" {
+ flags equipo }
+resource tipo_recH57 "Nuevo rol2" {
+ flags equipo }
+resource tipo_recH58 "Nuevo rol3" {
+ flags equipo }
+resource tipo_recH59 "Rol nuevo" {
+ flags equipo }
+resource tipo_recH60 "Rol nuevo 2" {
+ flags equipo }
+resource tipo_recH61 "Otro rol" {
+ flags equipo }
+resource tipo_recM42 "Estación de trabajo" {
+resource recM31 "Estación de trabajo " {
+               #unidades "10"
+               rate 40000
+               flags cosas }
+ flags material }
+resource tipo_recM43 "Equipo de computo" {
+resource recM35 "Computador Dell Desktop" {
+               #unidades "10"
+               rate 30000
+               flags cosas }
+ flags material }
+resource tipo_recM44 "Licencia de software" {
+ flags material }
+resource tipo_recM45 "Telecomunicaciones" {
+ flags material }
+resource tipo_recM47 "Papeleria" {
+ flags material }
+resource tipo_recM51 "Material de dibujo" {
+ flags material }
+resource tipo_recM53 "Material de oficina" {
+ flags material }
+resource tipo_recM54 "Equipos electrónicos" {
+ flags material }
+resource tipo_recM62 "tiporec1" {
+ flags material }
+resource tipo_recM63 "tiporec2" {
+ flags material }
+task AcSo "prueba1 " {
+                    responsible boss
+                    
+   task tarea152 "Actividad1" {
+                      priority 1
+                      effort 1h
+                      complete 0
+       journalentry  2014-08-03-16:00 "Tarea esta atrazada" {
+              alert red }
+   allocate undefined
+depends !deliveries.start
+}
+   task tarea153 "Actividad2" {
+                      priority 2
+                      effort 2h
+                      complete 0
+       journalentry  2014-08-03-16:00 "Tarea esta atrazada" {
+              alert red }
+   allocate undefined
+depends !tarea152
+}
+   task tarea154 "Actividad3" {
+                      priority 3
+                      effort 3h
+                      complete 0
+       journalentry  2014-08-03-16:00 "Tarea esta atrazada" {
+              alert red }
+   allocate undefined
+depends !tarea153
+}
+task deliveries "Milestones" {
+
+          purge chargeset
+          chargeset rev
+
+          task start "Inicio del Proyecto" {
+            start ${projectstart}
+            charge 0.0 onstart
+          }
+        }
+     }
+
+      navigator navbar {
+        hidereport @none
+      }
+
+      macro TaskTip [
+        tooltip istask() -8<-
+        '''Start: ''' <-query attribute='start'->
+        '''End: ''' <-query attribute='end'->
+        ----
+        '''Resources:'''
+        <-query attribute='resources'->
+        ----
+        '''Precursors: '''
+        <-query attribute='precursors'->
+        ----
+        '''Followers: '''
+        <-query attribute='followers'->
+        ->8-
+      ]
+
+      textreport frame "" {
+        header -8<-
+        <[navigator id="navbar"]>
+        ->8-
+        footer "----"
+        textreport index "Overview" {
+        formats html
+        title "Principal"
+        center '<[report id="overview"]>'
+        }
+
+        textreport development "Development" {
+          formats html
+          title "Planeacion"
+          center '<[report id="development"]>'
+          }
+
+        textreport "Deliveries" {
+          formats html
+          title "Estado avance"
+          center -8<-
+          <[report id="status.completed"]>
+          ----
+          <[report id="status.ongoing"]>
+          ----
+          <[report id="status.future"]>
+          ->8-
+        }
+
+        textreport  "Burndown" {
+          formats html
+          title "Burndown"
+          width 800
+          sorttasks id.up
+          tracereport "BurndownChart" {
+          columns
+            effort { title 'Planeado' },
+            effort { title 'Ejecutado' }
+            hidetask plan.id != "AcSo"
+          }
+          purge formats
+        }
+
+
+        textreport "ResourceGraph" {
+          formats html
+          title "Asignacion de recursos"
+          center '<[report id="resourceGraph"]>'
+        }
+
+        textreport "ContactList" {
+          formats html
+          title "Recursos Humanos"
+          center '<[report id="contactList"]>'
+        }
+
+        textreport "resourcesM" {
+          formats html
+          title "Recursos Materiales"
+          center '<[report id="resourcesM"]>'
+        }
+      }
+
+      # A traditional Gantt chart with a project overview.
+      taskreport overview "" {
+        header -8<-
+        === PLANEACION DEL PROCESO ===
+        ->8-
+        columns bsi { title 'WBS'  },
+        name { title 'Nombre' },
+        start { title 'Fecha inicio' },
+        end { title 'Fecha fin' },
+        effort { title 'Esfuerzo' },
+        chart { ${TaskTip}  scale day width 500 }
+        timeformat '%d %Y-%m-%d'
+        loadunit days
+        hideresource @all
+        balance cost rev
+        caption 'Los valores de esfuerzo estan calculados en dias/hombre'
+
+        }
+
+        # Macro to set the background color of a cell according to the alert
+        # level of the task.
+        macro AlertColor [
+          cellcolor plan.alert = 0 '#00D000' # green
+          cellcolor plan.alert = 1 '#D0D000' # yellow
+          cellcolor plan.alert = 2 '#D00000' # red
+        ]
+
+        taskreport status "" {
+          columns bsi { width 50 title 'WBS' },
+          name { width 150 title 'Nombre' },
+          start { width 100 title 'Fecha Inicio' },
+          end { width 100 title 'Fecha Fin' },
+          effort { width 100 title 'Esfuerzo' },
+          alert { title '' tooltip plan.journal != '' "<-query attribute='journal'->" width 15 },
+          status { title 'Estado' width 150 }
+          timeformat "%d %Y-%m-%d"
+          scenarios delayed
+          taskreport completed "" {
+          headline "Tareas completadas"
+          hidetask ~(delayed.end <= ${now})
+          }
+
+          taskreport ongoing "" {
+            headline "Tareas en curso"
+            hidetask ~((delayed.start <= ${now}) & (delayed.end > ${now}))
+          }
+
+          taskreport future "" {
+            headline "Tareas por realizar"
+            hidetask ~(delayed.start > ${now})
+          }
+        }
+
+        # A list of tasks showing the resources assigned to each task.
+        taskreport development "" {
+          scenarios delayed
+          headline "Asignacion de recursos"
+          columns
+          bsi { title 'WBS' },
+          name { title "Nombre" },
+          start { title "Fecha inicio" },
+          end { title "Fecha fin" },
+          effort { title "Trabajo" },
+          duration { title "Duracion" },
+          chart { ${TaskTip} scale day width 500 }
+          timeformat "%Y-%m-%d"
+          hideresource ~(isleaf() & isleaf_())
+          sortresources name.up
+        }
+
+        # A list of all tasks with the percentage completed for each task
+        taskreport deliveries "" {
+          headline "Entregables del proceso"
+          columns bsi { title "WBS" },
+          name { title "Nombre" },
+          start { title "Fecha inicio" },
+          end { title "Fecha fin" },
+          note { title "Nota" width 150 },
+          complete { title "Avance" },
+          chart { ${TaskTip} }
+          taskroot AcSo.deliveries
+          hideresource @all
+          scenarios plan, delayed
+        }
+
+        # A list of all employees with their contact details.
+        resourcereport contactList "" {
+          scenarios delayed
+          headline "Lista de contactos"
+          columns name { title "Nombre" },
+          email { celltext 1 "[mailto:<-email-> <-email->]" },
+          Phone { title "Telefono" },
+          managers { title "Jefe" },
+          chart { scale day }
+          hideresource  ~persona
+          sortresources name.up
+          hidetask @all
+        }
+
+        # A list of all employees with their contact details.
+        resourcereport resourcesM "" {
+          scenarios delayed
+          headline "Utilizacion de recursos"
+          columns name { title "Nombre" },
+          chart { scale day }
+          hideresource  ~cosas
+          sortresources name.up
+          hidetask @all
+        }
+
+        # A graph showing resource allocation. It identifies whether each
+        # resource is under- or over-allocated for.
+        resourcereport resourceGraph "" {
+          scenarios delayed
+          headline "Asignacion de recursos"
+          columns no,
+          name { title "Nombre" },
+          effort { title "Duracion" },
+          rate { title "Costo/dia" },
+          weekly { ${TaskTip} }
+          loadunit shortauto
+          # We only like to show leaf tasks for leaf resources.
+          hidetask ~(isleaf() & isleaf_())
+          sorttasks plan.start.up
+        }
+
+    export "MS-Project" {
+      formats mspxml
+      loadunit quarters
+    }

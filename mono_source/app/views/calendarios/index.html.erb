@@ -1,0 +1,122 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<script>
+    $(document).ready(function() {
+        $('.edit_texto').editable(function(value, settings) {
+            var campo = this.id.replace('edit_', '').split('-')[0];
+            var calendario_id = this.id.replace('edit_', '').split('-')[1];
+
+            $.ajax({
+                url: "<%= request.protocol + request.host_with_port %>/calendarios/" + calendario_id + "/actualizar_calendario",
+                type: "GET",
+                data: { campo: campo, id_calendario: calendario_id, valor: value },
+                success: function(data) {
+                    if(data != "true")
+                        alert("Ha ocurrido un error actualizando el campo solicitado");
+                }
+            });
+
+            return(value);
+        }, {  submit : 'OK' });
+    });
+
+</script>
+
+
+
+<div id="sgw_4_body" class="body  sgw_entity_query_entity_query_page">
+  <div class="contents" id="ext-gen77" >
+    <div id="layout_principal" class="sgw_new_grid sgw_entity_query_mode sg_scroll_container seltarget" style="left: 10px; top: 10px; right: 10px; ">
+      <%
+         if(@calendarios.count == 0)
+      %>
+          <div class="addnew">
+            No hay calendarios asociados a este proceso.<br /><br />
+            <a data-controls-modal="<%= @nuevoModal %>"  data-backdrop="true" class="" href="<%= @nuevoPath %>" rel="tooltip" title='<%= @nuevoBotonTexto %>' id="<%= @nuevoBotonId %>">
+              <%= image_tag "/images/add.png" %><br /><br />
+              Haz clic aquí para agregar uno nuevo.
+            </a>
+          </div>
+      <%
+         else
+      %>
+
+          <table id="calendario" class="table table-bordered table-striped tablesorter" >
+
+            <tr>
+              <th>Domingo</th><th>Lunes</th>
+              <th>Martes</th><th>Miercoles</th>
+              <th>Jueves</th><th>Viernes</th>
+              <th>Sabado</th>
+            </tr>
+
+
+            <tr>
+
+              <% i = 1
+                 @calendarios.each do |calendario|
+                   d = calendario.fecha %>
+                  <% if i == 1 %>
+                      <% d.wday.times do %>
+                          <td class='offset'></td>
+                      <% end
+                         i = 2 %>
+                  <% end %>
+                  <% if d.wday == 0 %>
+                      </tr><tr>
+                  <% end %>
+                  <td>
+                    <div id="edit_fecha-<%= calendario.id%>" name="edit_fecha-<%= calendario.id%>"><%= calendario.fecha %></div>
+                    <div class="edit_texto" id="edit_horas-<%= calendario.id%>" name="edit_horas-<%= calendario.id%>"><%= calendario.horas %></div>
+                  </td>
+              <% end %>
+              </tr>
+
+          </table>
+
+          <!-- <table id="procesosTabla" class="table table-bordered table-striped tablesorter" >
+            <thead>
+            <tr>
+              <th><%= t('Fecha')%></th>
+              <th><%= t('Dia')%></th>
+              <th><%= t('Horas')%></th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @calendarios.each do |calendario| %>
+                <tr id="<%= calendario.id %>">
+                  <td> <div id="edit_fecha-<%= calendario.id%>" name="edit_fecha-<%= calendario.id%>"><%= calendario.fecha %></div></td>
+                  <td> <div id="edit_dia-<%= calendario.id%>" name="edit_dia-<%= calendario.id%>"><%= calendario.dia %></div></td>
+                  <td> <div class="edit_texto" id="edit_horas-<%= calendario.id%>" name="edit_horas-<%= calendario.id%>"><%= calendario.horas %></div></td>
+                </tr>
+            <% end %>
+            </tbody>
+          </table>
+          -->
+
+          <input type="hidden" name="calendario_seleccionado" id="calendario_seleccionado" class="calendario_seleccionado" value="0" />
+
+      <%
+         end;
+      %>
+
+    </div>
+
+    <%= render "shared/footer_crud" %>
+  </div>
+</div>

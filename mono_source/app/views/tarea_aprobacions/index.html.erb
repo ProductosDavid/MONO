@@ -1,0 +1,46 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<h1>Listing tarea_aprobacions</h1>
+
+<table>
+  <tr>
+    <th>Tarea</th>
+    <th>Aprobado</th>
+    <th>Comentario</th>
+    <th>Usuario</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @tarea_aprobacions.each do |tarea_aprobacion| %>
+  <tr>
+    <td><%= tarea_aprobacion.tarea_id %></td>
+    <td><%= tarea_aprobacion.aprobado %></td>
+    <td><%= tarea_aprobacion.comentario %></td>
+    <td><%= tarea_aprobacion.usuario_id %></td>
+    <td><%= link_to 'Show', tarea_aprobacion %></td>
+    <td><%= link_to 'Edit', edit_tarea_aprobacion_path(tarea_aprobacion) %></td>
+    <td><%= link_to 'Destroy', tarea_aprobacion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Tarea aprobacion', new_tarea_aprobacion_path %>

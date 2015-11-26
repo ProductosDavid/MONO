@@ -1,0 +1,50 @@
+es:
+  errors:
+    messages:
+      not_found: "no encontrado"
+      already_confirmed: "ya ha sido confirmado"
+      not_locked: "no está bloqueado"
+
+  devise:
+    sessions:
+      link: 'Ingresar'
+      signed_in: 'Has ingresado correctamente.'
+      signed_out: 'Has salido correctamente.'
+      unauthenticated: 'Debes ingresar como usuario registrado antes de continuar.'
+      unconfirmed: 'Debes confirmar '
+      locked: 'Tu cuenta est&aacute; boqueada.'
+      invalid: 'El usuario y/o la contraseña son incorrectos.'
+      invalid_token: 'Token de autenticaticación incorrecto.'
+      timeout: 'Tu sesión ha caducado. Por favor, vuelve a ingresar.'
+      inactive: 'Tu cuenta todavia no ha sido activada.'
+    passwords:
+      link: '¿Olvidaste tu contraseña?'
+      send_instructions: 'En unos minutos recibirás un email con las instrucciones de como redefinir tu contraseña.'
+      updated: 'Has cambiado correctamente tu contraseña. Automaticamente se ha iniciado tu sesión.'
+    confirmations:
+      link: "¿No has recibido las instrucciones de confirmación?"
+      send_instructions: 'En unos minutos recibirás un email con las instrucciones de como confirmar tu cuenta. '
+      confirmed: 'Tu cuenta ha sido confirmada correctamente. Automaticamente se ha iniciado tu sesión.'
+    registrations:
+      link: 'Registrarse'
+      signed_up: 'Te has registrado correctamente. Se ha enviado una confirmación a tu email. Revísalo por favor.'
+      updated: 'Actualizaste tu cuenta correctamente.'
+      destroyed: 'Adios! Has cancelado tu cuenta correctamente. Esperamos verte por aquí otra vez...'
+    unlocks:
+      link: "¿No has recibido las instrucciones de desbloqueo?"
+      send_instructions: 'En unos minutos recibirás un email con las instrucciones de como desbloquear tu cuenta.'
+      unlocked: 'Tu cuenta ha sido desbloqueada correctamente. Automaticamente se ha iniciado tu sesión'
+    mailer:
+      confirmation_instructions: 'Instrucciones de confirmación de tu cuenta'
+      reset_password_instructions: 'Instrucciones para cambiar la contraseña de tu cuenta'
+      unlock_instructions: 'Instrucciones de desbloqueo de tu cuenta'
+    failure:
+          already_authenticated: "Ya existe un usuario conectado con sus datos."
+          inactive: "Su cuenta no se encuentra activa todavia. Por favor, comuniquese con mono-support."
+          invalid: "Su correo o contraseña es invalida, vuelvalo a intentar."
+          invalid_token: "Su token de autenticación es invalido."
+          locked: "Su cuenta se encuentra actualmente bloqueda."
+          not_found_in_database: "Su correo o contraseña no se encuentra se registrada en nuestro sistema."
+          timeout: "Su sesión ha expirado. Por favor, vuelva a ingresa para continuar."
+          unauthenticated: "Tienes que iniciar sesión o regístrate para continuar."
+          unconfirmed: "Usted tiene que confirmar su cuenta antes de continuar."

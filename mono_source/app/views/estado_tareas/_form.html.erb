@@ -1,0 +1,42 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<%= form_for(@estado_tarea) do |f| %>
+  <% if @estado_tarea.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@estado_tarea.errors.count, "error") %> prohibited this estado_tarea from being saved:</h2>
+
+      <ul>
+      <% @estado_tarea.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :tareas %><br />
+    <%= f.text_field :tareas %>
+  </div>
+  <div class="field">
+    <%= f.label :estado_actividads %><br />
+    <%= f.text_field :estado_actividads %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

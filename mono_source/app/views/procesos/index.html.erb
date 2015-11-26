@@ -1,0 +1,311 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<script type="text/javascript">
+    var nuevoModalId = "#nuevoproceso";
+    var editarModalId = "#editarproceso";
+    var eliminarModalId = "#eliminarproceso";
+    var nameInputId = "proceso_nombre";
+    var validateNameUrl = "<%= request.protocol + request.host_with_port %>/procesos/existe/nombre";
+    var nuevoButtonId = "#new_proceso";
+    var editarButtonId = "#editarproceso";
+    var eliminarButtonId = "#eliminarproceso";
+</script>
+
+<%= javascript_include_tag :'david-crud' %>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("[type='number']").keypress(function (evt) {
+            evt.preventDefault();
+        });
+        // Paginación - ordenamiento
+        $("#procesosTabla").tablesorter({ headers: { 0:{sorter: false}}})
+                .tablesorterPager({container: $("#pager"),positionFixed: false, size: 30});
+
+        // Callback de validacion de nombre repetido por ajax
+        $.validator.addMethod("nombre_unico", validar_nombre_unico, "");
+
+        $('#fini').datepick({dateFormat: 'yyyy-mm-dd', defaultDate: new Date()});
+        $('#ffin').datepick({dateFormat: 'yyyy-mm-dd', defaultDate: new Date()});
+
+        // Validaciones de jquery
+        $("#new_proceso").validate({
+            rules: {
+                "proceso[nombre]": {
+                    required: true,
+                    nombre_unico: true
+                },
+                "proceso_tipo_plantilla":{
+                    required: true
+                },
+                "plantilla":{
+                    required: true
+                },
+                "fini":{
+                    required: true
+                },
+                "ffin":{
+                    requiered: true
+                }
+
+            },
+            messages: {
+                "proceso[nombre]": {
+                    required: "<%= t('mandatory') %>",
+                    nombre_unico: "<%= t('name_exist') %>"
+                },
+                "plantilla":{
+                    required: "<%= t('mandatory') %>"
+                },
+                "proceso_tipo_plantilla":{
+                    required: "<%= t('mandatory') %>"
+                },
+                "fini":{
+                    required: "<%= t('mandatory') %>"
+                },
+                "ffin":{
+                    requiered: "<%= t('mandatory') %>"
+                }
+            }
+        });
+    });
+</script>
+
+
+<% @titulo = t('.title_pag') %>
+<%= render "shared/encabezado_crud" %>
+
+
+<!-- Menu y contenido-->
+<div id="sgw_4_body" class="body sg_scroll_container sgw_entity_query_entity_query_page">
+
+  <div class="contents" id="ext-gen77" >
+
+    <%
+       @filtroTexto = t('filtro')
+       @verListaTexto = t('viewList')
+       @verIconosTexto = t('viewSharp')
+
+       @nuevoBotonId = "nuevo_proceso"
+       @nuevoBotonTexto = t('add')
+       @nuevoPath = procesos_path
+       @nuevoModal = "nuevoproceso"
+
+       @editarBotonId = "editar_proceso"
+       @editarBotonTexto = t('edit')
+       @editarPath = "#"
+       @editarModal = "editarproceso"
+
+       @eliminarBotonId = "eliminar_proceso"
+       @eliminarBotonTexto = t('delete')
+       @eliminarPath = "#"
+       @eliminarModal = "eliminarproceso"
+       @eliminarConfirm = "Está seguro de querer eliminar la proceso?"
+    %>
+
+    <%= render "shared/menu_crud" %>
+
+    <!-- Formas de visualización en tabla o thumbnail,...-->
+
+
+    <div id="layout_principal" class="sgw_new_grid sgw_entity_query_mode sg_scroll_container seltarget" style="left: 250px; top: 30px; ">
+      <%
+         if(@procesos.count == 0)
+      %>
+          <div class="addnew">
+            <%= t('no_created') %><br /><br />
+             <a data-toggle="modal" role="button" class="btn" href="#nuevoproceso">
+            <%= image_tag "/images/add.png" %><br /><br />
+            <%= t('add_new') %>
+          </a>
+          </div>
+      <%
+        else
+      %>
+      <table id="procesosTabla" class="table table-bordered table-striped tablesorter" >
+        <col width="5%">
+        <col width="10%">
+        <col width="15%">
+        <col width="45%">
+        <col width="10%">
+        <col width="10%">
+        <thead>
+        <tr>
+          <th></th>
+          <th></th>
+          <th><%= t('nombre')%> </th>
+          <th><%= t('descr')%> </th>
+          <th><%= t('fecha_inicio')%> </th>
+          <th><%= t('fecha_fin')%> </th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @procesos.each do |proceso| %>
+            <tr id="<%= proceso.id %>">
+              <td style="vertical-align:middle"><input type="checkbox" name="'<%= proceso.id %>'" value="ON" onclick=doIt(1,this,this.form) /></td>
+
+              <td style="vertical-align:middle">
+                <% if FileTest.exist?(Dir.pwd + "/public/images/procesos/" + proceso.id.to_s() + "_original.img") %>
+                    <%= image_tag "/images/procesos/" + proceso.id.to_s() + '_original.img', :size => "75x75" %>
+                <% else %>
+                    <%= image_tag "/images/noimage.jpg", :size => "75x75" %>
+                <% end %>
+                </td>
+              <td style="vertical-align:middle">
+                <%= link_to proceso.nombre, proceso %>
+              </td>
+              <td style="vertical-align:middle"> <%= proceso.descripcion %></td>
+              <td style="vertical-align:middle"> <%= proceso.fechaini %></td>
+              <td style="vertical-align:middle"> <%= proceso.fechafin %></td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <%
+         end;
+      %>
+
+    </div>
+
+
+    <%= render "shared/filtro_crud" %>
+
+    <%
+       @pagTexto = @procesos.count.to_s() + " " + t('listade')
+       @porPagTexto = t('pag')
+    %>
+
+    <%= render "shared/footer_crud" %>
+  </div>
+
+</div>
+
+<!-- Formularios de edicion -->
+<% content_for :modal do %>
+  <div id="nuevoproceso" class="modal hide fade " role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3><%= t('add')%> <%= t('proceso')%></h3>
+    </div>
+
+    <%= form_for(@proceso, :html=> {:multipart=>true}) do |f| %>
+    <div class="modal-body">
+
+      <div class="row-fluid">
+
+         <script type="text/javascript">
+
+            $(document).ready(function() {
+
+                $("#proceso_tipo_plantilla").jCombo("../../procesos/getTipoPlantilla/all", { initial_text: "Seleccione...", selected_value: 5 });
+                $("#plantilla").jCombo("../../procesos/getdata/", { parent: "#proceso_tipo_plantilla", initial_text: "Seleccione..." });
+
+            });
+
+        </script>
+
+        <fieldset>
+              <div  id="procesos1" >
+                <div class="field">
+                  <%= f.label :nombre ,  "*" + t('nombre') %>
+                  <%= f.text_field :nombre %>
+                </div>
+
+                <div class="field">
+                  <%= f.label :tipo_plantilla , t('tipo_plantilla')%>
+                  <select id="proceso_tipo_plantilla" name="proceso_tipo_plantilla" >
+                    <option>Espere un momento...</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                    <%= f.label :plantilla , t('plantilla')%>
+                    <select id="plantilla" name="plantilla"></select>
+                </div>
+
+                <div class="field">
+                  <%= f.label :descripcion, t('descr') %>
+                  <%= f.text_area :descripcion, :size => "30x10" %>
+                </div>
+
+                <div class="field">
+                  <label>Horas laborales</label>
+                  <table width = "50">
+                    <tr>
+                      <th align="center">Lunes</th>
+                      <th align="center">Martes</th>
+                      <th align="center">Miercoles</th>
+                      <th align="center">Jueves</th>
+                      <th align="center">Viernes</th>
+                      <th align="center">Sabado</th>
+                      <th align="center">Domingo</th>
+                    </tr>
+                    <tr>
+                      <td align="center">
+                        <input type="number" name="lunes" id="lunes" min="0" max="24" style="width: 40px;" value="8">
+                      </td>
+                      <td align="center">
+                        <input type="number" name="martes" id="martes" min="0" max="24" style="width: 40px;" value="8">
+                      </td>
+                      <td align="center">
+                        <input type="number" name="miercoles" id="miercoles" min="0" max="24" style="width: 40px;" value="8">
+                      </td>
+                      <td align="center">
+                        <input type="number" name="jueves" id="jueves" min="0" max="24" style="width: 40px;" value="8">
+                      </td>
+                      <td align="center">
+                        <input type="number" name="viernes" id="viernes" min="0" max="24" style="width: 40px;" value="8">
+                      </td>
+                      <td align="center">
+                        <input type="number" name="sabado" id="sabado" min="0" max="24" style="width: 40px;" value="0">
+                      </td>
+                      <td align="center">
+                        <input type="number" name="domingo" id="domingo" min="0" max="24" style="width: 40px;" value="0">
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+
+                <div class="field">
+                  <label>Fecha Inicio</label>
+                  <input type="text" name="fini" id="fini" value="<%= @date %>" required>
+                </div>
+
+                <div class="field">
+                  <label>Fecha Fin</label>
+                  <input type="text" name="ffin" id="ffin" required>
+                </div>
+
+                <input type="hidden" id="proyecto_id" name="proyecto_id" value="<%= @proyecto.id  %>"/>
+              </div>
+            </fieldset>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+    <div class="actions"  align=right >
+
+      <input id="crear_proceso" class="btn primary"  name="commit" type="submit" value="<%= t('btnCrear')%>" />
+      <button class="btn" data-dismiss="modal" aria-hidden="true"><%= t('btnCancelar')%></button>
+    </div>
+    </div>
+    <% end %>
+
+  </div>
+<%end%>

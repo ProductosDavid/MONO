@@ -1,0 +1,46 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<h1>Listing compuerta_pre_desicions</h1>
+
+<table>
+  <tr>
+    <th>Compuerta</th>
+    <th>Ruta</th>
+    <th>Elegida</th>
+    <th>Tarea desicion</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @compuerta_pre_desicions.each do |compuerta_pre_desicion| %>
+  <tr>
+    <td><%= compuerta_pre_desicion.compuerta_id %></td>
+    <td><%= compuerta_pre_desicion.ruta_id %></td>
+    <td><%= compuerta_pre_desicion.elegida %></td>
+    <td><%= compuerta_pre_desicion.tarea_desicion_id %></td>
+    <td><%= link_to 'Show', compuerta_pre_desicion %></td>
+    <td><%= link_to 'Edit', edit_compuerta_pre_desicion_path(compuerta_pre_desicion) %></td>
+    <td><%= link_to 'Destroy', compuerta_pre_desicion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Compuerta pre desicion', new_compuerta_pre_desicion_path %>

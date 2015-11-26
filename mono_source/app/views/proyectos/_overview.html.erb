@@ -1,0 +1,272 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!-- Ultima Modificación: 09/05/2015 -->
+<!-- Scripts -->
+<script src="//ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/dojo.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    // Se importan la librerias de gráficas de Google
+    google.load('visualization', '1.0', {'packages': ['corechart']});
+    // Se define la funciones javascript para cargar la data de las gráficas
+    google.setOnLoadCallback(costoXProceso);
+
+
+    // Metodo para generar la gráfica de 'Costo por proceso'
+    function costoXProceso() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Proceso');
+        data.addColumn('number', 'Costo Planeado');
+        data.addColumn('number', 'Costo Acumulado');
+        data.addRows([
+            <%
+            if @procesos_data.length > 0
+            count = 1
+            @procesos_data.each do |p|
+            %>
+            ['<%= p[1] %>', <%= p[6].nil? ? 0 : p[6] %>, <%= p[7].nil? ? 0 : p[7] %>] <% if count < @procesos_data.length %>, <% end %>
+            <% end
+            end%>
+        ]);
+        var options = {
+            width: '100%',
+            height: 300,
+            align: 'center',
+            backgroundColor: '#BDBDBD'
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('costo_proceso'));
+        chart.draw(data, options);
+    }
+
+    // Metodo para generar la gráfica de 'Horas planeadas.vs.Horas Ejecutadas'
+    google.load('visualization', '1.0', {'packages': ['corechart']});
+    google.setOnLoadCallback(horasVS)
+    function horasVS() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Tipo');
+        data.addColumn('number', 'Hrs');
+        data.addRows([
+            ['Planeadas', <%= @horas_plan_proy %>],
+            ['Ejecutadas', <%= @horas_real_proy%>],
+
+        ]);
+
+        var options = {
+            backgroundColor: '#BDBDBD',
+            width: '100%',
+            height: 200,
+            align: 'center'
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('horas_general'));
+
+        chart.draw(data, options);
+    }
+    // Metodo para generar la gŕafica de 'Esfuerzo Planeado.vs.Esfuerzo Acumualdo'
+    google.load('visualization', '1.0', {'packages': ['corechart']});
+    google.setOnLoadCallback(esfuerzoVS)
+    function esfuerzoVS() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Tipo');
+        data.addColumn('number', '$');
+        data.addRows([
+            ['Planeadas', <%= @esfuerzo_planeados %>],
+            ['Ejecutadas', <%= @esfuerzo_ejecutado%>],
+
+        ]);
+
+        var options = {
+            backgroundColor: '#BDBDBD',
+            width: '100%',
+            height: 200,
+            align: 'center'
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('esfuerzo_general'));
+
+        chart.draw(data, options);
+    }
+
+    // Metodo para generar la gŕafica de 'Recursos Planeado.vs.Recurso Acumualdo'
+    google.load('visualization', '1.0', {'packages': ['corechart']});
+    google.setOnLoadCallback(recursosVS)
+    function recursosVS() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Tipo');
+        data.addColumn('number', '$');
+        data.addRows([
+            ['Planeadas', <%= @recursos_planeados %>],
+            ['Ejecutadas', <%= @recursos_ejecutado%>],
+
+        ]);
+
+        var options = {
+            backgroundColor: '#BDBDBD',
+            width: '100%',
+            height: 200,
+            align: 'center'
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('recursos_general'));
+
+        chart.draw(data, options);
+    }
+
+    $(window).resize(function () {
+        horasVS();
+        esfuerzoVS();
+        costoXProceso();
+        recursosVS();
+    });
+</script>
+
+<style>
+    h3 {
+        border: 1px solid black;
+        font-style: inherit;
+        background-color: #7f7f7f;
+        width: 100%;
+    }
+
+    .col-md-4{
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
+        float: left;
+        width: 30%;
+    }
+
+    .row {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+    .row:before,
+    .row:after
+    {
+        display: table;
+        content: " ";
+    }
+    .row:after
+    {
+        clear: both;
+    }
+
+</style>
+
+<!-- Hojas de Estilo -->
+<!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
+<link rel="stylesheet" href="/assets/demo.css">
+
+<!-- Código HTML -->
+<div class="contents sgw_new_grid proyectoverview" id="ext-gen33" style="" xmlns="http://www.w3.org/1999/html">
+
+  <body>
+
+  <!-- Panel superior -->
+  <div class="alert alert-info">
+
+    <div class="oneitem">
+      <span class="thelabel">Proyecto</span><br>
+      <span style="font-size:40px"><%= @proyecto.nombre %></span>
+
+      <p><%= link_to 'Atrás', proyectos_path %></p>
+    </div>
+
+    <div class="oneitem">
+      <p><b>Creado el:</b>
+        <%= @proyecto.fcreado %>
+      </p>
+
+      <p><b>Descripcion:</b>
+        <%= @proyecto.descripcion %>
+      </p>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+  <!-- Enlaces a procesos -->
+  <div class="proyitem fleft">
+    <%= link_to image_tag("/images/procesos.png", :border => 0, :class => "imagenicon fleft"), configu_path(@proyecto.id), :title => "Procesos" %>
+    <div class="fleft itemdata">
+      <h2><%= link_to "Procesos", configu_path(@proyecto.id) %></h2>
+      <%= link_to (@num_procesos == 0 ? 0 : @num_procesos).to_s() + " procesos asociados al proyecto", configu_path(@proyecto.id) %>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+  <!-- Enlaces a Trabajadores -->
+  <div class="proyitem fleft">
+    <%= link_to image_tag("/images/participantes.png", :border => 0, :class => "imagenicon fleft"), configupart_path(@proyecto.id), :title => "Participantes" %>
+    <div class="fleft itemdata">
+      <h2><%= link_to "Participantes", configupart_path(@proyecto.id) %></h2>
+      <%= link_to (@num_usuarios == 0 ? 0 : @num_usuarios).to_s + " participantes asociados al proyecto", configupart_path(@proyecto.id) %>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+  <!-- Enlaces a Empresas participantes -->
+  <div class="proyitem">
+    <%= link_to image_tag("/images/empresas.png", :border => 0, :class => "imagenicon fleft"), configuempr_path(@proyecto.id), :title => "Empresas" %>
+    <div class="fleft itemdata">
+      <h2><%= link_to "Empresas", configuempr_path(@proyecto.id) %></h2>
+      <%= link_to (@num_organizaciones == 0 ? 0 : @num_organizaciones).to_s + " empresas asociados al proyecto", configuempr_path(@proyecto.id) %>
+    </div>
+    <div class="clear"></div>
+  </div>
+  <div class="clear"></div>
+
+  <!-- Gráficas Resumen -->
+  <div class="row">
+
+    <!-- Gráfica de Horas -->
+    <div class="col-md-4" style="text-align: center">
+      <h3>Horas Planeadas vs Horas Ejecutadas</h3>
+
+      <div id="horas_general"></div>
+    </div>
+
+    <!-- Gráficas de Esfuerzo -->
+    <div class="col-md-4" style="text-align: center;">
+      <h3>Costo - Esfuerzo Planeado vs Esfuerzo Realizado</h3>
+
+      <div id="esfuerzo_general"></div>
+    </div>
+
+    <!-- Gráfica de Recursos -->
+    <div class="col-md-4" style="text-align: center;">
+      <h3>Costo - Recursos Planeado vs Recursos Ejecutados</h3>
+
+      <div id="recursos_general"></div>
+    </div>
+  </div>
+
+  <!-- Gráfica de Costos por proceso -->
+  <div class="row" style="text-align: center;">
+    <h3>Costo por proceso</h3>
+
+    <div id="costo_proceso"></div>
+  </div>
+
+  </body>
+  </html>
+</div>
+
+

@@ -1,0 +1,145 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<%#
+# = Vista de un menu para un CRUD
+# Esta vista implementa un menu para un CRUD.
+%>
+
+<!-- Barra de herramientas= Filtrar, buscar, nuevo, eliminar,...-->
+<div class="entity_query_page_toolbar" style="left: 250px; top: 0px; " id="ext-gen64">
+
+  <div class="toolbar sgc_toolbar" style="" id="ext-gen50">
+    <div class="main" id="ext-gen418">
+      <!--div item_index="2" style="float: left;" class="toolbar_item  " sg_tip="" id="ext-gen518">
+        <div class="toolbar_icon toolbar_plus" >
+          <li><a data-controls-modal="view_List" value="0" data-backdrop="true" class=" active" href="#" rel="tooltip"  id="view_list" title='<%= @verListaTexto %> '><img runat="server" src="/images/files_text.png" width="24px" height="24px" /></a></li>
+
+        </div>
+      </div>
+      <div item_index="3" style="float: left" class="toolbar_item  " sg_tip="" id="ext-gen518">
+        <div class="toolbar_icon toolbar_plus">
+          <li><a data-controls-modal="view_List" value="1" data-backdrop="true" class=" " id="thumba_list" href="#" rel="tooltip" title='<%= @verIconosTexto %> '><img runat="server" src="/images/desktop.png" width="24px" height="24px"  /></a></li>
+        </div>
+      </div-->
+      <!-- Barra de herramientas= CRUD...-->
+      <div item_index="4" style="float: left" class="toolbar_item  " sg_tip="" id="ext-gen532">
+        <div class="toolbar_divider"></div>
+      </div>
+      <div item_index="5" style="float: left" class="toolbar_item  " sg_tip="New Asset">
+
+        <div class="toolbar_icon toolbar_plus">
+           <!--role="button" class="btn" data-toggle="modal"         -->
+          <li>
+            <a data-toggle="modal" href="#<%= @nuevoModal %>" rel="tooltip" title='<%= @nuevoBotonTexto %>' id="<%= @nuevoBotonId %>">
+              <img runat="server" src="/images/folder_documents.png"  width="24px" height="24px"/>
+            </a>
+          </li>
+        </div>
+      </div>
+
+      <!--% @tipo_recursos.each do |tipo_recurso| %-->
+      <!--% if tipo_recurso.id==1 %-->
+      <div item_index="6" style="float: left" class="toolbar_item" sg_tip="Delete Selected Assets" id="flotante">
+        <div class="toolbar_icon toolbar_trash">
+          <li>
+            <a data-toggle="modal" id="<%= @eliminarBotonId %>" href="#<%= @eliminarModal %>"  rel="tooltip" title='<%= @eliminarBotonTexto %>'>
+              <img runat="server" src="/images/trash_full.png" width="24px" height="24px" />
+            </a>
+          </li>
+        </div>
+      </div>
+
+      <!--div item_index="7" style="float: left" class="toolbar_item" sg_tip="Edit Selected Assets" id="flotante">
+        <div class="toolbar_icon toolbar_edit">
+          <li>
+            <a data-toggle="modal" id="<%= @editarBotonId %>" href="#<%= @nuevoModal %>" rel="tooltip" title='<%= @editarBotonTexto %>' >
+            <img runat="server" src="/images/folder_edit.png" width="24px" height="24px" /></a>
+          </li>
+        </div>
+      </div-->
+
+      <div item_index="10" style="float: left" class="toolbar_item" sg_tip="View All" id="flotante">
+        <div class="toolbar_icon ">
+          <li>
+            <a data-toggle="modal" id="<%= @viewBotonId %>" href="#<%= @viewModal %>" rel="tooltip" title='<%= @viewBotonTexto %>' >
+              <img id="<%= @viewBotonId %>Img" runat="server" src="/images/eyeclose.png" width="24px" height="24px" /></a>
+          </li>
+        </div>
+      </div>
+      <!--% end %-->
+      <!--% end %-->
+
+      <div item_index="1" style="float: left" class="toolbar_item  " sg_tip="" id="ext-gen532">
+        <div class="toolbar_divider"></div>
+      </div>
+
+      <!--div item_index="8" style="float: left" class="toolbar_item  " sg_tip="More Actions">
+        <div class="toolbar_icon toolbar_gear_menu">
+          <li><a class="" disabled="disabled" href="#" rel="tooltip" title='<%= t('.config')%> ' ><img runat="server" src="/images/folder_app2.png" width="24px" height="24px" /></a></li>
+        </div>
+      </div-->
+
+      <div item_index="9" style="float: left" class="toolbar_item  " sg_tip="">
+        <div class="toolbar_divider">
+        </div>
+      </div>
+
+<!--
+      <div item_index="10" style="float: left" class="toolbar_item " sg_tip="">
+        <div class="toolbar_icon toolbar_gear_menu">
+          <div class="btn-group pull-right">
+            <ul>
+              <a class="" disabled="disabled" style="  float: left;
+                 padding: 0 14px;
+                 line-height: 34px;
+                 text-decoration: none;
+                 border: 1px solid #ddd;
+                 border-left-width: 1;"data-toggle="dropdown" rel="tooltip" title='<%= t('.orderby')%> '><img runat="server" src="/images/mail.png" /> <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a disabled="disabled" href="#"><%= t('.orderby1')%> </a></li>
+                <li><a disabled="disabled" href="#"><%= t('.orderby2')%> </a></li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+
+      <div item_index="15" style="float: left" class="toolbar_item " sg_tip="">
+        <div class="toolbar_icon toolbar_gear_menu">
+          <div class="btn-group pull-right">
+            <ul>
+              <a class="" disabled="disabled" style="  float: left;
+                 padding: 0 14px;
+                 line-height: 34px;
+                 text-decoration: none;
+                 border: 1px solid #ddd;
+                 border-left-width: 1;"data-toggle="dropdown" rel="tooltip" title='<%= t('.groupby')%> '><img runat="server" src="/images/mail.png" /> <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a disabled="disabled" href="#"><%= t('.groupby1')%> </a></li>
+                <li><a disabled="disabled" href="#"><%= t('.groupby2')%> </a></li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+      </div>
+             -->
+    </div>
+  </div>
+
+</div>

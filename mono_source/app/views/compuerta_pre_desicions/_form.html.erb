@@ -1,0 +1,50 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<%= form_for(@compuerta_pre_desicion) do |f| %>
+  <% if @compuerta_pre_desicion.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@compuerta_pre_desicion.errors.count, "error") %> prohibited this compuerta_pre_desicion from being saved:</h2>
+
+      <ul>
+      <% @compuerta_pre_desicion.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :compuerta_id %><br />
+    <%= f.number_field :compuerta_id %>
+  </div>
+  <div class="field">
+    <%= f.label :ruta_id %><br />
+    <%= f.number_field :ruta_id %>
+  </div>
+  <div class="field">
+    <%= f.label :elegida %><br />
+    <%= f.check_box :elegida %>
+  </div>
+  <div class="field">
+    <%= f.label :tarea_desicion_id %><br />
+    <%= f.number_field :tarea_desicion_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

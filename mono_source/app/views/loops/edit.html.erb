@@ -1,0 +1,209 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<%= javascript_include_tag :'david-crud' %>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        // Validaciones de jquery
+        $("#edit_loop_<%= @loop.id %>").validate({
+
+            rules: {
+                "loop[nombre]": {
+                    required: true
+                },
+                "loop[actividad_id]": {
+                    required: true
+                }
+            },
+            messages: {
+                "loop[nombre]": {
+                    required: "<%= t('mandatory') %>"
+                },
+                "loop[actividad_id]": {
+                    required: "<%= t('mandatory') %>"
+                }
+            }
+        });
+
+        $("#loop_activity_id").change(function(){
+            $("#loop_nombre").val("Ciclo a " + $("#loop_activity_id option:selected").text());
+            $("#loop_compuerta_id").val("");
+        });
+        $("#loop_compuerta_id").change(function(){
+            $("#loop_nombre").val("Ciclo a " + $("#loop_compuerta_id option:selected").text());
+            $("#loop_activity_id").val("");
+        });
+
+    });
+</script>
+
+<div class="" style="background: #F2F7FF; padding: 10px;" >
+  <div class="modal-header">
+
+    <h3><%= @loop.nombre %></h3>
+  </div>
+
+  <div class="row-fluid">
+    <%= form_for(@loop, :html=> {:multipart=>true}) do |f| %>
+
+        <div class="actions"  align="right">
+          <input id="crear_loop" class="btn primary"  name="commit" type="submit" value="Guardar" />
+        </div>
+
+        <fieldset>
+          <table>
+            <tr>
+              <td>
+
+                <%if !@loop.proceso.nil? && @loop.proceso.estado != "publicado" || @loop.proceso.nil?%>
+                    <div class="field">
+                      <p><%= f.label :nombre, t('nombre') %></p>
+                      <%= f.text_field :nombre, :maxlength => 250 %>
+                    </div>
+                    <p>Seleccione destino:</p>
+
+                    <div class="accordion-group">
+                      <div id="collapse-nodo" class="accordion-body in">
+                        <%
+                           #inicializacion de variables
+                           arreglo_actividades=[]
+                           arreglo_desiciones=[]
+                           contador2=0
+                           tipos_tareas = ['tarea_simple','tarea_multi_seq', 'tarea_multi_para']
+                           # carga del evento inicio como nodo de llegada para la busqueda del camino entre los dos extremos
+                           if @loop.proceso.nil? then
+                             nodo_llegada = MyJsTree.find_by_plantilla_id(@loop.plantilla.id, :conditions => [ "type = ?", "evento_inicio"]).id
+                           else
+                             nodo_llegada = MyJsTree.find_by_proceso_id(@proceso.id, :conditions => [ "type = ?", "evento_inicio"]).id
+                           end
+                           # busqueda del camino de padres entre los dos extremos
+                           padres = encontrar_camino @loop.my_js_tree_id,  nodo_llegada, false
+                           # filtrado del camino para establecer si existen compuertas inclusivas o paralelas antes del inicio
+                           tipos = ['compuerta_para','compuerta_inclu']
+                           comp_inc_exc =convertir_en_arreglo (MyJsTree.find(:all, :conditions => [ "id IN (?) AND type IN (?)", padres, tipos],:order => 'position'))
+                           # si existen compuertas inclusivas o paralelas halle los index en el arreglo de padres
+                           if comp_inc_exc != [] then
+                             arrindx = []
+                             comp_inc_exc.each do |c|
+                                arrindx.push(padres.index(c))
+                             end
+                             # cambie el nodo de llegada del inicio del arbol a la compuerta inclusiva o paralela más cercana
+                             nodo_llegada = padres[arrindx.min]
+                             # elimine de la lista de padres los anteriores al nuevo nodo de llegada
+                             padres = padres[0, padres.size - ((padres.length-1)  - padres.index(nodo_llegada))]
+                           end
+                           # creacion de arreglos de actividades y desiciones sobre el camino
+                           padres.each do |p|
+                             nodo = MyJsTree.find(p)
+                             if nodo.type == "ruta" then
+                               hijos_rama = MyJsTree.find_all_by_parent_id(nodo.id, :conditions => [ "type IN (?)", tipos_tareas],:order => 'position')
+                               arreglo_actividades = arreglo_actividades + (convertir_en_arreglo hijos_rama)
+                             elsif nodo.type == "compuerta_exclu"
+                               arreglo_desiciones[contador2] = nodo.id
+                               contador2=contador2+1
+                             end
+                           end
+                           # filtrado de las ultimas actividades para que no se incluyan actividades previas al nodo de llegada
+                           if @loop.proceso.nil? then
+                             ultima_desicion = MyJsTree.find_by_plantilla_id(@loop.plantilla.id, :conditions => [ "id IN (?) AND parent_id IN (?)", arreglo_desiciones , nodo_llegada])
+                           else
+                            ultima_desicion = MyJsTree.find_by_proceso_id(@proceso.id, :conditions => [ "id IN (?) AND parent_id IN (?)", arreglo_desiciones , nodo_llegada])
+                           end
+                           if !ultima_desicion.nil? then
+                             tipos_compuertas = ['compuerta_exclu']
+                             actividades_raiz = MyJsTree.find_all_by_parent_id(nodo_llegada, :conditions => ["position < (?) AND type IN (?)", ultima_desicion.position, tipos_tareas])
+                             arreglo_actividades = arreglo_actividades + (convertir_en_arreglo actividades_raiz)
+                             compuertas_raiz = MyJsTree.find_all_by_parent_id(nodo_llegada, :conditions => ["position < (?) AND type IN (?)", ultima_desicion.position, tipos_compuertas])
+                             arreglo_desiciones = arreglo_desiciones + (convertir_en_arreglo compuertas_raiz)
+                           end
+                           # creacion de arreglos de nombres e ids de actividades y desiciones que van a ser mostrados al usuario
+                           if @loop.proceso.nil? then
+                             actividades = Actividad.find_all_by_plantilla_id(@loop.plantilla.id, :conditions => ["my_js_tree_id IN (?)", arreglo_actividades])
+                             compuertas = Compuertu.find_all_by_plantilla_id(@loop.plantilla.id, :conditions => ["my_js_tree_id IN (?)", arreglo_desiciones])
+                           else
+                             actividades = Actividad.find_all_by_proceso_id(@proceso.id, :conditions => ["my_js_tree_id IN (?)", arreglo_actividades])
+                             compuertas = Compuertu.find_all_by_proceso_id(@proceso.id, :conditions => ["my_js_tree_id IN (?)", arreglo_desiciones])
+                           end
+                           @hash = Hash.new
+                           @hash = {'Actividades' => actividades , 'Desiciones' => compuertas }
+                        %>
+                        <div class="accordion-inner">
+                          <div class="tabbable tabs-left">
+                            <ul class="nav nav-tabs">
+                              <li class="active">
+                                <a href="#nodoActividades" data-toggle="tab">Actividades</a>
+                              </li>
+                              <li>
+                                <a href="#nodoDesiciones" data-toggle="tab">Desiciones</a>
+                              </li>
+                            </ul>
+                            <div class="tab-content">
+                              <div class="tab-pane in active" id="nodoActividades">
+                                <select id="loop_activity_id" name="loop[actividad_id]">
+                                  <option value="">--seleccione--</option>
+                                  <% @hash["Actividades"].each do |actividad| %>
+                                      <option value="<%= actividad.id %>" <%= @loop.actividad_id == actividad.id ? "selected":"" %>><%= actividad.nombre %></option>
+                                  <% end %>
+                                </select>
+                              </div>
+                              <div class="tab-pane in" id="nodoDesiciones">
+                                <select id="loop_compuerta_id" name="loop[compuerta_id]">
+                                  <option value="">--seleccione--</option>
+                                  <% @hash["Desiciones"].each do |desicion| %>
+                                      <option value="<%= desicion.id %>" <%= @loop.compuerta_id == desicion.id ? "selected":"" %>><%= desicion.nombre %></option>
+                                  <% end %>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                <% else %>
+
+                    <div class="field">
+                      <%= f.label :nombre, t('nombre') %>
+                      <%= f.label :nombre_val, @loop.nombre %>
+                    </div>
+
+                    <div class="field">
+                      <% if @loop.actividad != nil then%>
+                          <%= f.label :actividad_id, t('actividad') %>
+                          <%= f.label :actividad, @loop.actividad.nombre %>
+                      <% else
+                         nombre_compuerta = Compuertu.find(@loop.compuerta_id).nombre
+                      %>
+                          <%= f.label :compuerta_id, t('compuerta') %>
+                          <%= f.label :compuerta, nombre_compuerta %>
+                      <% end %>
+                    </div>
+
+                <% end %>
+
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+
+    <% end %>
+  </div>
+
+</div>
+

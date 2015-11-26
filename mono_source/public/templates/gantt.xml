@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Prueba 1" company="2014-07-01" webLink="http://" view-date="2014-07-01" view-index="0" gantt-divider-location="353" resource-divider-location="300" version="2.0" locale="es">
+  <tasks empty-milestones="true">
+    <task id="327" name="Actividad1" color="#8cb6ce" meeting="false" start="2014-07-01" duration="1" complete="0" expand="true" />
+    <task id="329" name="Actividad3" color="#8cb6ce" meeting="false" start="2014-07-02" duration="2" complete="0" expand="true" />
+    <task id="328" name="Actividad2" color="#8cb6ce" meeting="false" start="2014-07-04" duration="2" complete="0" expand="true" />
+  </tasks>
+  <resources>
+    <resource id="100" name="Luis" function="Default:0" contacts="" phone="" />
+    <resource id="101" name="Andrea" function="Default:0" contacts="" phone="" />
+    <resource id="102" name="Arturo" function="Default:0" contacts="" phone="" />
+    <resource id="103" name="Santiago" function="Default:0" contacts="" phone="" />
+    <resource id="104" name="Mateo" function="Default:0" contacts="" phone="" />
+  </resources>
+  <allocations>
+    <allocation task-id="1" resource-id="100" function="Default:0" responsible="true" load="100.0" />
+    <allocation task-id="2" resource-id="100" function="Default:0" responsible="true" load="100.0" />
+    <allocation task-id="3" resource-id="100" function="Default:0" responsible="true" load="100.0" />
+    <allocation task-id="4" resource-id="103" function="Default:0" responsible="false" load="100.0" />
+    <allocation task-id="5" resource-id="104" function="Default:0" responsible="false" load="100.0" />
+    <allocation task-id="6" resource-id="102" function="Default:0" responsible="false" load="100.0" />
+    <allocation task-id="7" resource-id="104" function="Default:0" responsible="false" load="100.0" />
+    <allocation task-id="8" resource-id="101" function="Default:0" responsible="false" load="100.0" />
+    <allocation task-id="9" resource-id="0" function="Default:0" responsible="true" load="100.0" />
+  </allocations>
+</project>

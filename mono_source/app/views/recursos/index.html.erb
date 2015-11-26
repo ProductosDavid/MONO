@@ -1,0 +1,426 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<%#
+# = Vista de una grilla de recursos
+# Esta vista implementa la grilla de administración de recursos
+%>
+
+<script type="text/javascript">
+  var nuevoModalId = "#nuevorecurso";
+  var editarModalId = "#editarrecurso";
+  var eliminarModalId = "#eliminarrecurso";
+  var nameInputId = "recurso_nombre";
+  var validateNameUrl = "<%= request.protocol + request.host_with_port %>/recursos/existe/nombre";
+  var nuevoButtonId = "#new_tipo_recurso";
+  var editarButtonId = "#editarrecurso";
+  var eliminarButtonId = "#eliminarrecurso";
+</script>
+
+<%= javascript_include_tag :'david-crud' %>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    // Paginación - ordenamiento
+    $("#recursosTabla").tablesorter({ headers: { 0:{sorter: false}}})
+    .tablesorterPager({container: $("#pager"),positionFixed: false, size: 30});
+
+    // Callback de validacion de nombre repetido por ajax
+    $.validator.addMethod("nombre_unico", validar_nombre_unico, "");
+
+      $("#nuevo_recurso").click(function() {
+          $('#recurso_nombre').val('');
+          $('#recurso_unidades').val('');
+          $('#recurso_costo').val('');
+          $('#recurso_descripcion').text('');
+          $('.idTipo').attr("checked",false);
+          $('#idTart').val('');
+          $('#idTartE').val('');
+          $('#idTartH').val('');
+          editando = false;
+      });
+
+      $("#editar_recurso").click(function() {
+          editando = true;
+      });
+
+      $("#eliminar_recurso").click(function() {
+          editando = true;
+      });
+
+      var habilitado;
+      habilitado = false;
+      $("#view_recurso").click(function() {
+          if (!habilitado){
+              document.getElementById('recursosTablaDeshabilitado').style.display = 'inherit';
+              document.getElementById('recursosTabla').style.display = 'none';
+              $('#view_recursoImg').attr('src','/images/eyeopen.png');
+              habilitado = true;
+          }
+          else{
+              document.getElementById('recursosTablaDeshabilitado').style.display = 'none';
+              document.getElementById('recursosTabla').style.display = 'inherit';
+              $('#view_recursoImg').attr('src','/images/eyeclose.png');
+              habilitado = false;
+          }
+      });
+
+    // Validaciones de jquery
+    $("#new_recurso").validate({
+      rules: {
+        "recurso[nombre]": {
+          required: true,
+          nombre_unico: true
+        },
+        "recurso[costo]": {
+          required: true,
+          number: true
+        },
+        "recurso[unidades]": {
+          required: true,
+          number: true
+        },
+        "recurso[tipo_recurso_id]": {
+          required: true
+        }
+
+      },
+      messages: {
+        "recurso[nombre]": {
+          required: "<%= t('mandatory') %>",
+          nombre_unico: "<%= t('name_exist') %>"
+        },
+        "recurso[costo]": {
+          required: "<%= t('mandatory') %>",
+          number: "<%= t('numeric_value') %>"
+        },
+        "recurso[unidades]": {
+          required: "<%= t('mandatory') %>",
+          number: "<%= t('numeric_value') %>"
+        },
+        "recurso[tipo_recurso_id]": {
+          required: "<%= t('mandatory') %>"
+        }
+      }
+    });
+
+      //Este es el anterior método de editar recurso
+      $('.idTipo').change(function() {
+          if($(this).is(":checked")) {
+              var id = $(this).val();
+              fila = document.getElementById(id);
+              $('#idTart').val(id);
+              $('#idTartE').val(id);
+              $.ajax({
+                  url: "<%= request.protocol + request.host_with_port %>/recurso/" + id + "/get_recurso",
+                  type: "GET",
+                  success: function(data) {
+                      $('#recurso_nombre').val(data.nombre);
+                      $('#recurso_tipo_recurso_id').val(data.tipo_recurso_id);
+                      $('#recurso_unidades').val(data.unidades);
+                      $('#recurso_costo').val(data.costo);
+                      $('#recurso_descripcion').text(data.descripcion);
+                  }
+              });
+          }
+
+      });
+
+      //Este es el nuevo método de editar recurso
+      $('.editarItem').click(function() {
+          var id = this.id.replace("editar","");
+          $('#idTart').val(id);
+          $('#idTartE').val(id);
+          $.ajax({
+              url: "<%= request.protocol + request.host_with_port %>/recurso/" + id + "/get_recurso",
+              type: "GET",
+              success: function(data) {
+                  $('#recurso_nombre').val(data.nombre);
+                  $('#recurso_tipo_recurso_id').val(data.tipo_recurso_id);
+                  $('#recurso_unidades').val(data.unidades);
+                  $('#recurso_costo').val(data.costo);
+                  $('#recurso_descripcion').text(data.descripcion);
+              }
+          });
+          editando = true;
+      });
+
+      $('.edit_checkbox').change(function(){
+          var eyeon = "visible";
+          //var eyeoff = "visible";
+          var recurso_id = this.id.replace('edit_', '').split('-')[1];
+          var value = $(this).attr("checked");
+          $.ajax({
+              url: "<%= request.protocol + request.host_with_port %>/recurso/deshabilitarg",
+              type: "GET",
+              data: { idTartE: recurso_id },
+              success: function(data) {
+                  if(data != "true")
+                      alert("Ha ocurrido un error actualizando el campo solicitado");
+                  else {
+                      if (value){
+                          eyeon = "visible";
+                          //eyeoff = "none"
+                      }
+                      else {
+                          eyeon = "none";
+                          //eyeoff = "visible"
+                      }
+
+                      $("#" + recurso_id).attr("style","display: " + eyeon);
+                      //$("#" + recurso_id + "d").attr("style","display: " + eyeoff);
+
+                      $("#edit_habilitado-" + recurso_id).attr("checked",value);
+                      $("#edit_habilitadod-" + recurso_id).attr("checked",value);
+                  }
+              }
+          });
+      });
+  });
+
+</script>
+
+<% @titulo = t('.title_pag') %>
+<%= render "shared/encabezado_crud" %>
+
+<!-- Menu y contenido-->
+<div id="sgw_4_body" class="body sg_scroll_container sgw_entity_query_entity_query_page">
+
+  <div class="contents" id="ext-gen77" >
+
+<%
+    @filtroTexto = t('filtro')
+    @verListaTexto = t('viewList')
+    @verIconosTexto = t('viewSharp')
+
+    @nuevoBotonId = "nuevo_recurso"
+    @nuevoBotonTexto = t('add')
+    @nuevoPath = recursos_path
+    @nuevoModal = "nuevorecurso"
+
+    @editarBotonId = "editar_recurso"
+    @editarBotonTexto = t('edit')
+    @editarPath = "#"
+    @editarModal = "editarrecurso"
+
+    @eliminarBotonId = "eliminar_recurso"
+    @eliminarBotonTexto = t('delete')
+    @eliminarPath = "#"
+    @eliminarModal = "eliminarrecurso"
+    @eliminarConfirm = "Está seguro de querer eliminar el tipo_recurso?"
+
+    @viewBotonId = "view_recurso"
+    @viewBotonTexto = t('view')
+    @viewPath = "#"
+    @viewModal = "viewrecurso"
+%>
+
+<%= render "shared/menu_crud" %>
+
+
+    <!-- Formas de visualización en tabla o thumbnail,...-->
+    <div id="layout_principal" class="sgw_new_grid sgw_entity_query_mode sg_scroll_container seltarget" style="left: 250px; top: 30px; ">
+      <%
+         if(@recursos.count == 0)
+      %>
+          <div class="addnew">
+            <%= t('no_created')%>.<br /><br />
+            <a data-toggle="modal" role="button" class="btn" href="#nuevorecurso">
+              <%= image_tag "/images/add.png" %><br /><br />
+              <%= t('add_new')%>.
+            </a>
+          </div>
+      <%
+         else
+      %>
+      <table id="recursosTabla" class="table table-bordered table-striped tablesorter">
+        <thead>
+          <tr>
+            <th></th>
+            <th><%= t('nombre')%> </th>
+            <th><%= t('tipo_recurso')%> </th>
+            <th><%= t('costo_estimado') %> </th>
+            <th><%= t('unidades')%> </th>
+            <th><%= t('descr')%> </th>
+            <th><%= t('habilitado')%> </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @recursos.each do |recurso| %>
+             <tr id="<%= recurso.id %>" style="display: <%= (recurso.habilitado == "\x01" ? "visible" : "none") %>">
+               <td width="20px"><a data-toggle="modal" id="editar<%= recurso.id %>" class="editarItem" href="#<%= @nuevoModal %>" rel="tooltip" title='<%= @editarBotonTexto %>' >
+                 <img runat="server" src="/images/folder_edit.png" width="24px" height="24px" /></a></td>
+               <td> <%= link_to recurso.nombre, "#" %></td>
+               <td> <%= recurso.tipo_recurso.nombre %></td>
+               <td> <%= number_to_currency(recurso.costo, :unit => "$") %></td>
+               <td> <%= recurso.unidades %></td>
+               <td> <%= recurso.descripcion %></td>
+               <td><input class="edit_checkbox" id="edit_habilitado-<%=recurso.id%>" name="edit_habilitado-<%=recurso.id%>" type="checkbox" <%= (recurso.habilitado == "\x01" ? "checked" : "") %> /></td>
+             </tr>
+          <% end %>
+        </tbody>
+        </table>
+          <table id="recursosTablaDeshabilitado" class="table table-bordered table-striped tablesorter" style="display: none">
+            <thead>
+            <tr>
+              <th></th>
+              <th><%= t('nombre')%> </th>
+              <th><%= t('tipo_recurso')%> </th>
+              <th><%= t('costo_estimado') %> </th>
+              <th><%= t('unidades')%> </th>
+              <th><%= t('descr')%> </th>
+              <th><%= t('habilitado')%> </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <% @recursosd.each do |recurso| %>
+                <tr id="<%= recurso.id %>d">
+                  <td width="20px"><input id="idTipo" name="idTipo" class="idTipo" value="<%= recurso.id %>" type="radio" /></td>
+                  <td> <%= link_to recurso.nombre, "#" %></td>
+                  <td> <%= recurso.tipo_recurso_id %></td>
+                  <td> <%= number_to_currency(recurso.costo, :unit => "$") %></td>
+                  <td> <%= recurso.unidades %></td>
+                  <td> <%= recurso.descripcion %></td>
+                  <td><input class="edit_checkbox" id="edit_habilitadod-<%=recurso.id%>" name="edit_habilitadod-<%=recurso.id%>" type="checkbox" <%= (recurso.habilitado == "\x01" ? "checked" : "") %> /></td>
+                </tr>
+            <% end %>
+            </tbody>
+          </table>
+     <% end %>
+    </div>
+
+ <%= render "shared/filtro_crud" %>
+
+  <%
+    @pagTexto = @recursos.count.to_s() + " " + t('listade')
+    @porPagTexto = t('pag')
+  %>
+
+  <%= render "shared/footer_crud" %>
+
+  </div>
+
+</div>
+
+
+
+
+<!-- Formularios de edicion -->
+<!--div class="divDemoBody"-->
+<% content_for :modal do %>
+
+    <!-- <div id="viewrecurso" class="modal hide fade " role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3><%= t('enabled')%> <%= t('recurso')%></h3>
+      </div>
+      <div class="modal-body">
+        <h5><%= t('confirmacion_vista')%> <%= t('recurso')%>????</h5>
+        <div class="row-fluid">
+          <%= form_tag("/recurso/habilitarvista", :method=>"post") do %>
+              <fieldset>
+              </fieldset>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="actions"  align=right >
+          <input id="crear_recurso1" class="btn primary"  name="commit" type="submit" value="<%= t('btnCrear')%>" />
+          <button class="btn" data-dismiss="modal" aria-hidden="true"><%= t('btnCancelar')%></button>
+        </div>
+      </div>
+      <% end %>
+    </div> -->
+
+    <!--<div id="eliminarrecurso" class="modal hide fade " role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3><%= t('disable')%> <%= t('recurso')%></h3>
+      </div>
+      <div class="modal-body">
+        <h5><%= t('confirmacion_deshabilitados')%> <%= t('recurso')%>?</h5>
+        <div class="row-fluid">
+          <%= form_tag("/recurso/deshabilitar", :method=>"post") do %>
+              <fieldset>
+                <input id="idTartE" name="idTartE" value="<%= @recurso.id %>" type="hidden"/>
+              </fieldset>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="actions"  align=right >
+
+          <input id="crear_recurso2" class="btn primary"  name="commit" type="submit" value="<%= t('btnCrear')%>" />
+          <button class="btn" data-dismiss="modal" aria-hidden="true"><%= t('btnCancelar')%></button>
+        </div>
+      </div>
+      <% end %>
+    </div> -->
+
+<div id="nuevorecurso" class="modal hide fade " role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3><%= t('add')%> <%= t('recurso')%></h3>
+  </div>
+
+  <div class="modal-body">
+    <div class="row-fluid">
+      <%= form_for(@recurso) do |f| %>
+          <fieldset>
+            <input id="idTart" name="idTart" value="<%= @recurso.id %>" type="hidden"/>
+            <!-- Datos del proyecto
+             ================================================== -->
+            <div id="rol">
+
+
+              <div class="field">
+                <%= f.label :nombre,  "*" + t('nombre')%><br />
+                <%= f.text_field :nombre, :maxlength => 250 %>
+              </div>
+              <div class="field">
+                <%= f.label :tipo_recurso, t('tipo_recurso') %><br />
+                <%= f.select :tipo_recurso_id, TipoRecurso.find_all_by_unit(2).map{|p| [p.nombre, p.id]} %>
+              </div>
+              <div class="field">
+                <%= f.label :unidades,  "*" + t('unidades') %><br />
+                <%= f.text_field :unidades %>
+              </div>
+              <div class="field">
+                <%= f.label :costo,  "*" + t('costo_estimado') %><br />
+                <%= f.text_field :costo %>
+              </div>
+              <div class="field">
+                <%= f.label :descripcion, t('descr') %><br />
+                <%= f.text_area :descripcion, :size => "30x10", :maxlength => 250 %>
+              </div>
+            </div>
+
+          </fieldset>
+
+          </div>
+          </div>
+          <div class="modal-footer">
+            <div class="actions"  align=right >
+
+              <input id="crear_recurso" class="btn primary"  name="commit" type="submit" value="<%= t('btnCrear')%>" />
+              <button class="btn" data-dismiss="modal" aria-hidden="true"><%= t('btnCancelar')%></button>
+            </div>
+          </div>
+      <% end %>
+
+      </div>
+<% end %>

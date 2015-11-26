@@ -1,0 +1,101 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!--%= layout false %-->
+<div id="layout_principal" class="sgw_new_grid sgw_entity_query_mode sg_scroll_container seltarget" style=": 10px; top: 10px; right: 10px; ">
+
+  <div style="background-color: #F2F7FF" align="center">
+
+    <h1 style="text-align: center; color: #004ab3"><%= t('layouts.application.home') %> </h1>
+
+    <table style="width: 700px">
+      <tr>
+        <td style="text-align: justify;">
+
+          <h2>¿Qu&eacute; es MONO?</h2>
+
+          <p> El Sistema MONO es una iniciativa que surge como un apoyo a la industria de contenidos digitales en el pa&iacute;s.
+            Considerado un sector estrat&eacute;gico, el gobierno busca competir con los contenidos generados a nivel
+            internacional y para lograrlo se ha planteado dos objetivos: buscar generar m&aacute;s alianzas entre empresas y
+            lograr que los asociados colaboren en el diseño e ingenier&iacute;a de nuevos productos, adaptando su modelos
+            y sistemas de producci&oacute;n. Todo esto hace que la planificaci&oacute;n de los proyectos sea m&aacute;s importante pero a la vez
+            m&aacute;s compleja.</p>
+
+          <p>MONO facilita esto, permiti&eacute;ndoles integrar, controlar y optimizar sus procesos de desarrollo,
+            y as&iacute; como tambi&eacute;n, hacer seguimiento en la utilizaci&oacute;n de los recursos, los tiempos de desarrollo,
+            las responsabilidades y los costos.
+          </p>
+
+          <h2>Tutoriales</h2>
+
+          <p> Para aprender a usar la herramienta, puede hacer <a href="http://wikimono.uniandes.edu.co">clic aqu&iacute;</a>
+            para ver el listado de videos tutoriales de la aplicaci&oacute;n.
+          </p>
+        </td>
+        <td>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+        <td style="text-align: center">
+          <%= image_tag "/images/intro.png", :size => "230x200" %>
+          &nbsp;&nbsp;
+
+
+          <%= form_for(resource, :as => resource_name, :url => user_session_url, html: {data: {ajax: false}}) do |f| %>
+              <!--%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %-->
+
+              <div><%= f.label :email, t('email') %>
+                <%= f.email_field :email, :autofocus => true %></div>
+
+              <div><%= f.label :password, t('password') %>
+                <%= f.password_field :password %></div>
+
+              <!--% if devise_mapping.rememberable? -%>
+          <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
+      <!--% end %-->
+              <br/>
+
+              <div><%= link_to "¿Olvido su contraseña?", new_password_path(resource_name) %></div>
+              <br/>
+              <!--%= render "devise/shared/links" %-->
+              <div><%= f.submit t('login') %></div>
+              <br/>
+              <% if notice %>
+                  <p class="alert alert-success"><%= notice %></p>
+              <% end %>
+              <% if alert %>
+                  <p class="alert alert-danger"><%= alert %></p>
+              <% end %>
+
+          <% end %>
+
+        </td>
+      </tr>
+    </table>
+    <img src="/images/uniandes.png" alt="">
+    <img src="/images/logo_cg.jpg" alt="" width="146px" height="44px">
+    <img src="/images/logo_or.jpg" alt="" width="146px" height="44px">
+    <img src="/images/logo_qc.png" alt="" width="146px" height="44px">
+    <img src="/images/logo_en.png" alt="" width="146px" height="44px">
+  </div>
+</div>
+
+
+
+
+
+
+

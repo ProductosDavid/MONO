@@ -1,0 +1,61 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<%= form_for(@organizacion) do |f| %>
+  <% if @organizacion.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@organizacion.errors.count, "error") %> prohibited this organizacion from being saved:</h2>
+
+      <ul>
+      <% @organizacion.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <table>
+	<tr><td>&nbsp;</td></tr>
+	<tr><td>&nbsp;</td></tr>	
+  </table>
+	<table class="form-signin">
+	      <tr>
+	          <td><h1 class="form-signin-heading">New Company</h1></td>
+	      </tr>
+	      <tr>
+	          <td> <%= f.text_field :nombre, :placeholder => 'Nombre empresa' %></td>
+	      </tr>
+	      <tr>
+	          <td> <%= f.text_field :descripcion, :placeholder => 'Descripción'%></td>
+	      </tr>
+      <tr>
+        <td> <%= f.text_field :representante, :placeholder => 'Id representante'%></td>
+      </tr>
+      <tr>
+        <td> <%= f.text_field :nit, :placeholder => 'NIT'%></td>
+      </tr>
+      <tr>
+        <td> <%= f.text_field :direccion, :placeholder => 'Dirección'%></td>
+      </tr>
+
+	      <tr><td>&nbsp;</td></tr>
+	      <tr><td><%= f.submit "Send"%> </tr></td>
+	      <tr><td><%= link_to 'Atras', root_path%> </tr></td>
+		</td></tr>
+	</table>
+<% end %>
+
+

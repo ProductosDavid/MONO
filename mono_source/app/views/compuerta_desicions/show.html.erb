@@ -1,0 +1,42 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Id:</b>
+  <%= @compuerta_desicion.id %>
+</p>
+
+<p>
+  <b>Compuerta:</b>
+  <%= @compuerta_desicion.compuerta_id %>
+</p>
+
+<p>
+  <b>Ruta:</b>
+  <%= @compuerta_desicion.ruta_id %>
+</p>
+
+<p>
+  <b>Elegida:</b>
+  <%= @compuerta_desicion.elegida %>
+</p>
+
+
+<%= link_to 'Edit', edit_compuerta_desicion_path(@compuerta_desicion) %> |
+<%= link_to 'Back', compuerta_desicions_path %>

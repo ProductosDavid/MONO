@@ -1,0 +1,529 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>Reporte de Costos - Proceso</title>
+  <style type="text/css">
+      @page {
+          margin-left: 1cm;
+          margin-right: 1cm
+      }
+
+      p {
+          margin-bottom: 0.25cm;
+          line-height: 120%
+      }
+
+      td p {
+          margin-bottom: 0cm
+      }
+  </style>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+      google.load('visualization', '1.0', {'packages': ['corechart']});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Acitividad');
+          data.addColumn('number', 'Costo Planeado');
+          data.addColumn('number', 'Costo Acumulado');
+          data.addRows([
+              <%
+              if @actividad.length > 0
+              count = 1
+              @actividad.each do |a|
+              %>
+              ['<%= a[0] %>', <%= a[6].nil? ? 0 : a[6] %>, <%= a[7].nil? ? 0 : a[7] %>] <% if count < @actividad.length %>, <% end %>
+              <% end
+              end%>
+          ]);
+          var options = {
+              'width': 800,
+              'height': 400,
+              'align': 'center'
+          };
+          var chart = new google.visualization.ColumnChart(document.getElementById('costo_actividad'));
+          chart.draw(data, options);
+      }
+  </script>
+  <script>
+      function printContent() {
+          var restorepage = document.body.innerHTML;
+          var printcontent = document.getElementById("reporte").innerHTML;
+          document.body.innerHTML = printcontent;
+          window.print();
+          document.body.innerHTML = restorepage;
+      }
+  </script>
+  <script type="text/javascript">
+      google.load("visualization", "1", {packages: ["timeline"]});
+      google.setOnLoadCallback(drawChart);
+      var month = [
+          "January", "February", "March",
+          "April", "May", "June", "July",
+          "August", "September", "October",
+          "November", "December"
+      ];
+      <%
+      l=1
+      len=@tareas.length
+      t_horas=8
+      %>
+      function drawChart() {
+          var container = document.getElementById('tiempo_actividad');
+          var chart = new google.visualization.Timeline(container);
+          var dataTable = new google.visualization.DataTable();
+
+          dataTable.addColumn({type: 'string', id: 'Tarea'});
+          dataTable.addColumn({type: 'date', id: 'Inicio'});
+          dataTable.addColumn({type: 'date', id: 'Fin'});
+          dataTable.addRows([
+              <% @tareas.each do |t|
+              t_horas=8
+              if t.fecha_inicio != nil and t.fecha_fin !=nil%>
+              <% if t.fecha_inicio == t.fecha_fin%>
+              ['<%=t.nombre%>', new Date(month[<%=t.fecha_inicio.month-1%>] + " <%=t.fecha_inicio.day%>, <%=t.fecha_inicio.year%> <%=t_horas%>:00:00"), new Date(month[<%=t.fecha_fin.month-1%>] + " <%=t.fecha_fin.day%>, <%=t.fecha_fin.year%> 23:59:59")]<% if l < len %>, <% end %>
+              <%
+              else %>
+              ['<%=t.nombre%>', new Date(month[<%=t.fecha_inicio.month-1%>] + " <%=t.fecha_inicio.day%>, <%=t.fecha_inicio.year%> 00:00:00"), new Date(month[<%=t.fecha_fin.month-1%>] + " <%=t.fecha_fin.day%>, <%=t.fecha_fin.year%>  00:00:00")]<% if l < len %>, <% end %>
+              <%
+              end
+              timeline = true
+              end
+              l=l+1 %>
+              <% end %>
+          ]);
+          var options = {
+              'width': 800,
+              'height': 400,
+              'align': 'center'
+          };
+          chart.draw(dataTable, options);
+      }
+  </script>
+</head>
+<div align="right">
+  <form action="<%= request.protocol + request.host_with_port %>/reporte/<%= @proceso.proyecto_id %>/proyecto">
+    <input type="submit" value="Ver Reporte del Proyecto"></form>
+  <button onclick="printContent()">Imprimir</button>
+</div>
+<body lang="es-CO" dir="ltr">
+<div id="reporte">
+  <p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+  </p>
+  <table width="100%" cellpadding="4" cellspacing="0">
+    <col width="72*">
+    <col width="134*">
+    <col width="50*">
+    <tr>
+      <td rowspan="2" width="28%" height="39" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0; padding-bottom: 0; padding-left: 0; padding-right: 0;">
+        <div align="center">
+          <%= image_tag "/images/mono_logo.jpg", :size => "300x120" %>
+        </div>
+      </td>
+      <td rowspan="2" width="53%" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <br/>
+
+        <p align="center"><b>REPORTE DE COSTOS - PROCESO</b></p>
+
+        <p align="center"><br/>
+          <b><%= @proceso.nombre %></b>
+        </p>
+        <br/>
+      </td>
+      <td width="19%" style="border: 1px solid #000000; padding: 0cm">
+        <p align="center"><b>Fecha de Creación</b></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="19%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000;padding: 0;">
+        <p align="center"><br/>
+          <%= Time.new.to_s %>
+        </p>
+      </td>
+    </tr>
+  </table>
+  <br/>
+
+  <table width="100%" cellpadding="4" cellspacing="0">
+    <col width="72*">
+    <col width="184*">
+    <tr>
+      <td colspan="2" width="100%" valign="top" style="border: 1px solid #000000; padding: 0.1cm">
+        <p align="center"><b>RESUMEN</b></p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="28%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p><b>Proceso</b></p>
+      </td>
+      <td width="72%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p><%= @proceso.nombre %></p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="28%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p><b>Descripción</b></p>
+      </td>
+      <td width="72%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p><%= @proceso.descripcion %></p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="28%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p><b>Fecha de Inicio</b></p>
+      </td>
+      <td width="72%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p><%= @proceso.fechaini %></p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="28%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p><b>Fecha de Finalización</b></p>
+      </td>
+      <td width="72%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p><%= @proceso.fechafin %></p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="28%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p><b>Horas de Trabajo planeadas</b></p>
+      </td>
+      <td width="72%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p><%= @horas_plan_pros %></p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="28%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p><b>Horas de Trabajo Acumuladas</b></p>
+      </td>
+      <td width="72%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p><%= @horas_real_pros %></p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="28%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p><b>Costo Planeado</b></p>
+      </td>
+      <td width="72%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p><%= number_to_currency(@costo_plan_pros.nil? ? 0 : @costo_plan_pros) %></p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="28%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p><b>Costo Acumulado</b></p>
+      </td>
+      <td width="72%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p><%= number_to_currency(@costo_real_pros.nil? ? 0 : @costo_real_pros) %></p>
+      </td>
+    </tr>
+  </table>
+  <p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+  </p>
+  <table width="100%" cellpadding="4" cellspacing="0">
+    <col width="39*">
+    <col width="41*">
+    <col width="38*">
+    <col width="30*">
+    <col width="27*">
+    <col width="20*">
+    <col width="30*">
+    <col width="30*">
+    <tr>
+      <td colspan="8" width="100%" style="border: 1px solid #000000; padding: 0.1cm">
+        <p align="center"><b>COSTO - ESFUERZO</b></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="15%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Trabajador</b></p>
+      </td>
+      <td width="16%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Organización</b></p>
+      </td>
+      <td width="15%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Rol</b></p>
+      </td>
+      <td width="12%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Costo/hora</b></p>
+      </td>
+      <td width="11%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Horas planeadas</b></p>
+      </td>
+      <td width="8%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Horas Acumuladas</b></p>
+      </td>
+      <td width="12%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Costo Planeado</b></p>
+      </td>
+      <td width="12%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p align="center"><b>Costo Acumulado</b></p>
+      </td>
+    </tr>
+    <% if @mano_proy.length > 0
+         mano_plan = 0
+         mano_real = 0
+         @mano_proy.each do |mano| %>
+            <tr>
+              <td width="15%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><%= mano[0] %></p>
+              </td>
+              <td width="16%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><%= mano[1] %></p>
+              </td>
+              <td width="15%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><%= mano[2] %></p>
+              </td>
+              <td width="12%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm;text-align: right;">
+                <p><%= number_to_currency(mano[3].nil? ? 0 : mano[3]) %></p>
+              </td>
+              <td width="11%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm;text-align: center;">
+                <p><%= mano[4] %></p>
+              </td>
+              <td width="8%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm;text-align: center;">
+                <p><%= mano[5] %></p>
+              </td>
+              <td width="12%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm;text-align: right;">
+                <p><%= number_to_currency(mano[6].nil? ? 0 : mano[6]) %></p>
+              </td>
+              <td width="12%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm;text-align: right;">
+                <p><%= number_to_currency(mano[7].nil? ? 0 : mano[7]) %></p>
+              </td>
+            </tr>
+        <% mano_plan = mano_plan + mano[6]
+           mano_real = mano_real + mano[7]
+           end
+           end %>
+    <tr>
+      <td colspan="6" width="77%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p><i><b>Costo total de la COSTO - ESFUERZO</b></i></p>
+      </td>
+      <td width="12%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm;text-align: right;">
+        <p><%= number_to_currency(mano_plan) %></p>
+      </td>
+      <td width="12%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm;text-align: right;">
+        <p><%= number_to_currency(mano_real.nil? ? 0 : mano_real) %></p>
+      </td>
+    </tr>
+  </table>
+  <p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+  </p>
+  <table width="100%" cellpadding="4" cellspacing="0">
+    <col width="51*">
+    <col width="51*">
+    <col width="51*">
+    <col width="51*">
+    <col width="51*">
+    <tr>
+      <td colspan="7" width="100%" height="17" style="border: 1px solid #000000; padding: 0.1cm">
+        <p align="center"><b>COSTO - RECURSOS</b></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="20%" height="18" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Recurso</b></p>
+      </td>
+      <td width="20%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Organización</b></p>
+      </td>
+      <td width="10%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Costo/Unidad</b></p>
+      </td>
+      <td width="10%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Unidades Planeadas</b></p>
+      </td>
+      <td width="10%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Unidades Ejecutadas</b></p>
+      </td>
+      <td width="15%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p align="center"><b>Costo Planeado</b></p>
+      </td>
+      <td width="15%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p align="center"><b>Costo Acumulado</b></p>
+      </td>
+    </tr>
+    <% total_recursos =0
+       total_recurso_a = 0
+       if @recursos.length > 0
+         @recursos.each do |r| %>
+            <tr>
+              <td width="20%" height="18" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><%= r[0] %></p>
+              </td>
+              <td width="20%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><%= r[1] %></p>
+              </td>
+              <td width="10%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p align="right"><%= number_to_currency(r[2].nil? ? 0 : r[2]) %></p>
+              </td>
+              <td width="10%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p align="center"><%= r[3].nil? ? 0 : r[3] %></p>
+              </td>
+              <td width="10%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p align="center"><%= r[4].nil? ? 0 : r[4] %></p>
+              </td>
+              <td width="15%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p align="right"><%= number_to_currency(r[5].nil? ? 0 : r[5]) %></p>
+              </td>
+              <td width="15%" style="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p align="right"><%= number_to_currency(r[6].nil? ? 0 : r[6]) %></p>
+              </td>
+            </tr>
+        <% total_recursos = total_recursos + r[5]
+           total_recurso_a = total_recurso_a + r[6]
+           end
+           end %>
+    <tr>
+      <td colspan="5" width="80%" height="17" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p><i><b>Costo total de todos los recursos de proyecto</b></i></p>
+      </td>
+      <td width="15%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p align="right" style="background: transparent"><%= number_to_currency(total_recursos.nil? ? 0 : total_recursos) %></p>
+      </td>
+      <td width="15%" style="border-top: none; border-bottom: 1px solid #000000; border-left: none; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p align="right" style="background: transparent"><%= number_to_currency(total_recurso_a.nil? ? 0 : total_recurso_a) %></p>
+      </td>
+    </tr>
+  </table>
+  <br/>
+
+  <table width="100%" cellpadding="4" cellspacing="0">
+    <col width="59*">
+    <col width="21*">
+    <col width="33*">
+    <col width="33*">
+    <col width="27*">
+    <col width="21*">
+    <col width="31*">
+    <col width="32*">
+    <tr>
+      <td colspan="8" width="100%" style="border: 1px solid #000000; padding: 0.1cm">
+        <p align="center"><b>ACTIVIDADES</b></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="23%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Nombre</b></p>
+      </td>
+      <td width="8%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>ID del proceso</b></p>
+      </td>
+      <td width="13%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Responsable</b></p>
+      </td>
+      <td width="13%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Recursos</b></p>
+      </td>
+      <td width="11%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Horas planeadas</b></p>
+      </td>
+      <td width="8%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Horas Acumuladas</b></p>
+      </td>
+      <td width="12%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="center"><b>Costo planeado</b></p>
+      </td>
+      <td width="13%" bgcolor="#cccccc" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p align="center"><b>Costo Acumulado</b></p>
+      </td>
+    </tr>
+    <%
+       if @actividad.length > 0
+         @actividad.each do |a|
+    %>
+            <tr>
+              <td width="23%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><%= a[0] %></p>
+              </td>
+              <td width="8%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><%= a[1] %></p>
+              </td>
+              <td width="13%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><%= a[2] %></p>
+              </td>
+              <td width="13%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><%= a[3] %></p>
+              </td>
+              <td width="11%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p align="center"><%= a[4].nil? ? 0 : a[4] %></p>
+              </td>
+              <td width="8%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p align="center"><%= a[5].nil? ? 0 : a[5] %></p>
+              </td>
+              <td width="12%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p align="right"><%= number_to_currency(a[6].nil? ? 0 : a[6]) %></p>
+              </td>
+              <td width="13%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p align="right"><%= number_to_currency(a[7].nil? ? 0 : a[7]) %></p>
+              </td>
+            </tr>
+        <% end
+           end %>
+    <tr>
+      <td colspan="6" width="75%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p><i><b>Costo total de todas las actividades</b></i></p>
+      </td>
+      <td width="12%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+        <p align="right"><%= number_to_currency(@costo_plan_pros.nil? ? 0 : @costo_plan_pros) %></p>
+      </td>
+      <td width="13%" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <p align="right"><%= number_to_currency(@costo_real_pros.nil? ? 0 : @costo_real_pros) %></p>
+      </td>
+    </tr>
+  </table>
+  <br/>
+
+  <table width="100%" cellpadding="4" cellspacing="0">
+    <col width="256*">
+    <tr>
+      <td width="100%" valign="top" style="border: 1px solid #000000; padding: 0.1cm">
+        <p align="center"><b>Gráfica de Costos por Proceso</b></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <div id="costo_actividad" align="center"></div>
+      </td>
+    </tr>
+  </table>
+  <br/>
+
+  <table width="100%" cellpadding="4" cellspacing="0">
+    <col width="256*">
+    <tr>
+      <td width="100%" valign="top" style="border: 1px solid #000000; padding: 0.1cm">
+        <p align="center"><b>Gráfica de Costos por Proceso</b></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+        <div id="tiempo_actividad" align="center"></div>
+      </td>
+    </tr>
+  </table>
+  <p><i>Este reporte es generado por <a href="http://mono.uniandes.edu.co">MONO</a>.Universidad de los Andes. 2015.</i>
+  </p>
+</div>
+</body>
+</html>
+

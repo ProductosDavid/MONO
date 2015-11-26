@@ -1,0 +1,42 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<h1>Listing estado_tareas</h1>
+
+<table>
+  <tr>
+    <th>Tareas</th>
+    <th>Estado actividads</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @estado_tareas.each do |estado_tarea| %>
+  <tr>
+    <td><%= estado_tarea.tareas %></td>
+    <td><%= estado_tarea.estado_actividads %></td>
+    <td><%= link_to 'Show', estado_tarea %></td>
+    <td><%= link_to 'Edit', edit_estado_tarea_path(estado_tarea) %></td>
+    <td><%= link_to 'Destroy', estado_tarea, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Estado tarea', new_estado_tarea_path %>

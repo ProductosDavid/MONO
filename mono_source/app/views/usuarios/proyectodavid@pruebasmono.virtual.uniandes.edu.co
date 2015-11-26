@@ -1,0 +1,463 @@
+//
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+<%#
+# = Vista de una grilla de usuarios
+# Esta vista implementa la grilla de administración de usuarios
+%>
+
+<script type="text/javascript">
+    var nuevoModalId = "#nuevousuario";
+    var editarModalId = "#editarusuario";
+    var eliminarModalId = "#eliminarusuario";
+    var nameInputId = "usuario_email";
+    var pwdInputId = "usuario_password";
+    var pwdConfInputId = "usuario_password_confirm";
+    var validateNameUrl = "<%= request.protocol + request.host_with_port %>/usuarios/existe/login";
+    var validatePasswordUrl = "<%= request.protocol + request.host_with_port %>/usuarios/password_iguales/pasword";
+    var nuevoButtonId = "#new_usuario";
+    var editarButtonId = "#editarusuario";
+    var eliminarButtonId = "#eliminarusuario";
+</script>
+
+<%= javascript_include_tag :'david-crud' %>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        // Paginación - ordenamiento
+        $("#usuariosTabla").tablesorter({ headers: { 0: {sorter: false}}})
+                .tablesorterPager({container: $("#pager"), positionFixed: false, size: 30});
+
+        // Callback de validacion de nombre repetido por ajax
+        $.validator.addMethod("nombre_unico", validar_nombre_unico, "");
+
+        $.validator.addMethod("password_iguales", validar_password_iguales, "");
+
+        $("#nuevo_usuario").click(function () {
+            $('#usuario_nombre').val('');
+            $('#usuario_apellidos').val('');
+            $('#usuario_email').val('');
+            $('#usuario_password').val('');
+            $('#usuario_password_confirm').val('');
+            $('#usuario_tipo_recurso_id').val('');
+            $('#usuario_costo').val('');
+            $('input[name="roles[]"]').each(function () {
+                $(this).attr("checked", false);
+            });
+            $('.idTipo').attr("checked", false);
+            $('#idTart').val('');
+            editando = false;
+        });
+
+        $("#editar_usuario").click(function () {
+            editando = true;
+        });
+
+        $("#eliminar_usuario").click(function () {
+            editando = true;
+        });
+
+        var habilitado;
+        habilitado = false;
+        $("#view_usuario").click(function () {
+            if (!habilitado) {
+                document.getElementById('usuariosTablaDeshabilitado').style.display = 'inherit';
+                document.getElementById('usuariosTabla').style.display = 'none';
+                $('#view_usuarioImg').attr('src', '/images/eyeopen.png');
+                habilitado = true;
+            }
+            else {
+                document.getElementById('usuariosTablaDeshabilitado').style.display = 'none';
+                document.getElementById('usuariosTabla').style.display = 'inherit';
+                $('#view_usuarioImg').attr('src', '/images/eyeclose.png');
+                habilitado = false;
+            }
+        });
+
+
+        // Validaciones de jquery
+        $("#new_usuario").validate({
+
+            rules: {
+                "usuario[nombre]": {
+                    required: true
+                },
+                "usuario[costo]": {
+                    required: true,
+                    number: true
+                },
+                "usuario[email]": {
+                    nombre_unico: true,
+                    required: true,
+                    email: true
+                },
+                "usuario[password]": {
+                    required: true,
+                    minlength: 8
+                },
+                "usuario[password_confirm]": {
+                    required: true,
+                    password_iguales: true,
+                    minlength: 8
+                }
+            },
+
+            messages: {
+                "usuario[nombre]": {
+                    required: "<%= t('mandatory')%>"
+                },
+                "usuario[costo]": {
+                    required: "<%= t('mandatory')%>",
+                    numeric: "<%= t('numeric_value')%>"
+                },
+                "usuario[email]": {
+                    email: "<%= t('email_invalid')%>",
+                    required: "<%= t('mandatory')%>",
+                    nombre_unico: "<%= t('email_exist')%>"
+                },
+                "usuario[password]": {
+                    required: "<%= t('mandatory')%>",
+                    minlength: "<%= t('.min_lenght') %>"
+                },
+                "usuario[password_confirm]": {
+                    required: "<%= t('mandatory')%>",
+                    password_iguales: "<%= t('password_nomatch')%>",
+                    minlength: "<%= t('.min_lenght') %>"
+                }
+            },
+            submitHandler: function(form) {
+
+                if ($("#new_usuario").valid()) {
+                    e.preventDefault();
+                    return false;
+                }
+                else {
+                    // do other things for a valid form
+                    alert("Se ha creado un nuevo usuario.");
+                    form.submit();
+                }
+            }
+        });
+
+
+        $('.editarItem').click(function () {
+            var id = this.id.replace("editar", "");
+            $('#idTart').val(id);
+            $('#idTartE').val(id);
+            $.ajax({
+                url: "<%= request.protocol + request.host_with_port %>/usuario/" + id + "/get_usuario",
+                type: "GET",
+                success: function (data) {
+                    $('#usuario_nombre').val(data.nombre);
+                    $('#usuario_apellidos').val(data.apellidos);
+                    $('#usuario_email').val(data.email);
+                    $('#usuario_password').val(data.password);
+                    $('#usuario_password_confirm').val(data.password);
+                    $('#usuario_tipo_recurso_id').val(data.tipo_recurso_id);
+                    $('#usuario_costo').val(data.costo);
+
+                    var i = 1;
+                    $('input[name="roles[]"]').each(function () {
+                        if (i == 1) {
+                            $(this).attr("checked", data.rol1);
+                        }
+                        else if (i == 2) {
+                            $(this).attr("checked", data.rol2);
+                        }
+                        else if (i == 3) {
+                            $(this).attr("checked", data.rol3);
+                        }
+                        i = i + 1;
+                    });
+                }
+            });
+            editando = true;
+        });
+
+        $('.edit_checkbox').change(function () {
+            var eyeon = "visible";
+            //var eyeoff = "visible";
+            var usuario_id = this.id.replace('edit_', '').split('-')[1];
+            var value = $(this).attr("checked");
+            $.ajax({
+                url: "<%= request.protocol + request.host_with_port %>/usuario/deshabilitarg",
+                type: "GET",
+                data: { idTartE: usuario_id },
+                success: function (data) {
+                    if (data != "true")
+                        alert("Ha ocurrido un error actualizando el campo solicitado");
+                    else {
+                        if (value) {
+                            eyeon = "visible";
+                            //eyeoff = "none"
+                        }
+                        else {
+                            eyeon = "none";
+                            //eyeoff = "visible"
+                        }
+
+                        $("#" + usuario_id).attr("style", "display: " + eyeon);
+                        //$("#" + usuario_id + "d").attr("style","display: " + eyeoff);
+
+                        $("#edit_habilitado-" + usuario_id).attr("checked", value);
+                        $("#edit_habilitadod-" + usuario_id).attr("checked", value);
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+
+<% @titulo = t('.title_pag') %>
+<%= render "shared/encabezado_crud" %>
+
+
+<!-- Menu y contenido-->
+<div id="sgw_4_body" class="body sg_scroll_container sgw_entity_query_entity_query_page">
+
+  <div class="contents" id="ext-gen77">
+
+    <%
+       @filtroTexto = t('filtro')
+       @verListaTexto = t('viewList')
+       @verIconosTexto = t('viewSharp')
+
+       @nuevoBotonId = "nuevo_usuario"
+       @nuevoBotonTexto = t('add')
+       @nuevoPath = usuarios_path
+       @nuevoModal = "nuevousuario"
+
+       @editarBotonId = "editar_usuario"
+       @editarBotonTexto = t('edit')
+       @editarPath = "#"
+       @editarModal = "editarusuario"
+
+       @eliminarBotonId = "eliminar_usuario"
+       @eliminarBotonTexto = t('delete')
+       @eliminarPath = "#"
+       @eliminarModal = "eliminarusuario"
+       @eliminarConfirm = "Está seguro de querer eliminar el usuario?"
+
+       @viewBotonId = "view_usuario"
+       @viewBotonTexto = t('view')
+       @viewPath = "#"
+       @viewModal = "viewusuario"
+    %>
+
+    <%= render "shared/menu_crud" %>
+
+    <!-- Formas de visualización en tabla o thumbnail,...-->
+    <div id="layout_principal" class="sgw_new_grid sgw_entity_query_mode sg_scroll_container seltarget" style="left: 250px; top: 30px; ">
+
+      <table id="usuariosTabla" class="table table-bordered table-striped tablesorter">
+        <thead>
+        <tr>
+          <th></th>
+          <th><%= t('nombre') %></th>
+          <th><%= t('tipo_recurso') %></th>
+          <th><%= t('email') %> </th>
+          <th><%= t('habilitado') %> </th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @usuarios.each do |usuario| %>
+            <tr id="<%= usuario.id %>" style="display: <%= (usuario.habilitado == "\x01" ? "visible" : "none") %>">
+              <td width="20px">
+                <a data-toggle="modal" id="editar<%= usuario.id %>" class="editarItem" href="#<%= @nuevoModal %>" rel="tooltip" title='<%= @editarBotonTexto %>'>
+                  <img runat="server" src="/images/folder_edit.png" width="24px" height="24px"/></a>
+              </td>
+              <td style="vertical-align:middle">
+                <% if FileTest.exist?(Dir.pwd + "/public/images/usuarios/" + usuario.id.to_s() + "_original.img") %>
+                    <%= image_tag "/images/usuarios/" + usuario.id.to_s() + '_original.img', :size => "75x75" %>
+                <% else %>
+                    <%= image_tag "/images/noimage.jpg", :size => "75x75" %>
+                <% end %>
+                <%= link_to usuario.nombre + " " + (usuario.apellidos != nil ? usuario.apellidos : ""), "#" %>
+
+              </td>
+              <td style="vertical-align:middle"><%= usuario.tipo_recurso != nil ? usuario.tipo_recurso.nombre : t('admin') %></td>
+              <td style="vertical-align:middle"> <%= usuario.email %></td>
+              <td>
+                <input class="edit_checkbox" id="edit_habilitado-<%= usuario.id %>" name="edit_habilitado-<%= usuario.id %>" type="checkbox" <%= (usuario.habilitado == "\x01" ? "checked" : "") %> />
+              </td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <table id="usuariosTablaDeshabilitado" class="table table-bordered table-striped tablesorter" style="display: none">
+        <thead>
+        <tr>
+          <th></th>
+          <th><%= t('nombre') %></th>
+          <th><%= t('tipo_recurso') %></th>
+          <th><%= t('email') %> </th>
+          <th><%= t('habilitado') %> </th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @usuariosd.each do |usuario| %>
+            <tr id="<%= usuario.id %>d">
+              <td width="20px">
+                <a data-toggle="modal" id="editar<%= usuario.id %>" class="editarItem" href="#<%= @nuevoModal %>" rel="tooltip" title='<%= @editarBotonTexto %>'>
+                  <img runat="server" src="/images/folder_edit.png" width="24px" height="24px"/></a>
+              </td>
+              <td style="vertical-align:middle">
+                <% if FileTest.exist?(Dir.pwd + "/public/images/usuarios/" + usuario.id.to_s() + "_original.img") %>
+                    <%= image_tag "/images/usuarios/" + usuario.id.to_s() + '_original.img', :size => "75x75" %>
+                <% else %>
+                    <%= image_tag "/images/noimage.jpg", :size => "75x75" %>
+                <% end %>
+                <%= link_to usuario.nombre + " " + (usuario.apellidos != nil ? usuario.apellidos : ""), "#" %>
+
+              </td>
+              <td style="vertical-align:middle"><%= usuario.tipo_recurso != nil ? usuario.tipo_recurso.nombre : t('admin') %></td>
+              <td style="vertical-align:middle"> <%= usuario.email %></td>
+              <td>
+                <input class="edit_checkbox" id="edit_habilitadod-<%= usuario.id %>" name="edit_habilitadod-<%= usuario.id %>" type="checkbox" <%= (usuario.habilitado == "\x01" ? "checked" : "") %> />
+              </td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= render "shared/filtro_crud" %>
+
+    <%
+       @pagTexto = @usuarios.count.to_s() + " " + t('listade')
+       @porPagTexto = t('pag')
+    %>
+
+    <%= render "shared/footer_crud" %>
+  </div>
+
+</div>
+
+<!-- Formularios de edicion -->
+<% content_for :modal do %>
+    <!--<div id="eliminarusuario" class="modal hide fade " role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3><%= t('disable') %> <%= t('usuario') %></h3>
+      </div>
+      <div class="modal-body">
+        <h5><%= t('confirmacion_deshabilitados') %> <%= t('usuario') %>?</h5>
+        <div class="row-fluid">
+          <%= form_tag("/usuario/deshabilitar", :method => "post") do %>
+              <fieldset>
+                <input id="idTartE" name="idTartE" value="<%= @usuario.id %>" type="hidden"/>
+              </fieldset>
+              </div>
+              </div>
+              <div class="modal-footer">
+                <div class="actions"  align=right >
+
+                  <input id="crear_recurso" class="btn primary"  name="commit" type="submit" value="<%= t('btnCrear') %>" />
+                  <button class="btn" data-dismiss="modal" aria-hidden="true"><%= t('btnCancelar') %></button>
+                </div>
+              </div>
+          <% end %>
+          </div> -->
+
+    <div id="nuevousuario" class="modal hide fade " role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <%= form_for(@usuario, :html => {:multipart => true}) do |f| %>
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3><%= t('usuario') %></h3>
+          </div>
+
+          <div class="modal-body">
+            <div class="row-fluid">
+
+
+              <fieldset>
+                <input id="idTart" name="idTart" value="<%= @usuario.id %>" type="hidden"/>
+                <!-- Datos del usuario
+               ================================================== -->
+                <div id="rol">
+
+                  <div class="field">
+                    <%= f.label :nombre, "*" + t('nombres') %>
+                    <%= f.text_field :nombre, :maxlength => 250 %>
+                  </div>
+                  <div class="field">
+                    <%= f.label :apellidos, t('apellidos') %>
+                    <%= f.text_field :apellidos, :maxlength => 250 %>
+                  </div>
+                  <div class="field">
+                    <%= f.label :email, "*" + t('email') %>
+                    <%= f.text_field :email, :maxlength => 250 %>
+                  </div>
+                  <div class="field">
+                    <%= f.label :password, "*" + t('password') %>
+                    <%= f.password_field :password, :maxlength => 50 %>
+                  </div>
+                  <div class="field"> <!-- Confirmar -->
+                    <%= f.label :password_confirm, "*" + t('password_confirm') %>
+                    <%= f.password_field :password_confirm, :maxlength => 50 %>
+                  </div>
+                  <div class="field" onclick="">
+                    <%= f.label :tipo_recurso, t('rol') %>
+                    <%= f.select :tipo_recurso_id, TipoRecurso.find_all_by_unit(1).map { |p| [p.nombre, p.id] } %>
+                  </div>
+                  <div class="field">
+                    <%= f.label :costo, "*" + t('costo_hora') %>
+                    <%= f.text_field :costo, :maxlength => 50 %>
+                  </div>
+                  <div class="field">
+                    <%= f.label :role, t('.nivel_acceso') %>
+                  </div>
+                  <div class="field">
+                    <p>
+                      <input type="checkbox" id="roles[]" name="roles[]" value="1"> <%= t('admin') %> </input>
+                    </p>
+
+                    <p>
+                      <input type="checkbox" id="roles[]" name="roles[]" value="2"> <%= t('manager') %> </input>
+                    </p>
+
+                    <p>
+                      <input type="checkbox" id="roles[]" name="roles[]" value="3"> <%= t('worker') %> </input>
+                    </p>
+                  </div>
+                  <div class="field">
+                    <%= f.label :imagen, t('imagen') %>
+                    <%= f.file_field :imagen %>
+                  </div>
+
+
+                </div>
+              </fieldset>
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="actions" align=right>
+
+              <input id="crear_usuario" class="btn primary" name="commit" type="submit" value="<%= t('btnCrear') %>"/>
+              <button class="btn" data-dismiss="modal" aria-hidden="true"><%= t('btnCancelar') %></button>
+            </div>
+          </div>
+      <% end %>
+
+    </div>
+
+<% end %>
+

@@ -1,0 +1,54 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html>
+    <head>
+        <title>Use jsTree</title>
+
+        <script>
+            $(document).ready(function(){
+                $("#treeViewDiv").jstree({
+                    "json_data" : {
+                        "ajax": {
+                                "url" : "/treedata.json",
+                                "data" : function(m) {
+                                  return  {id: m.attr ? m.attr("id") : 0};
+                                }
+
+                            }
+
+                    },
+                    "plugins" : [ "themes", "json_data", "ui" ]
+                }).bind("select_node.jstree", function(e, data)
+                    {
+                        if(jQuery.data(data.rslt.obj[0], "href"))
+                        {
+                            window.location=jQuery.data(data.rslt.obj[0], "href");
+                        }
+                        else
+                        {
+                            alert("No href defined for this element");
+                        }
+                    })
+            });
+        </script>
+    </head>
+    <body>
+        <div id="treeViewDiv">
+        </div>
+    </body>
+</html>

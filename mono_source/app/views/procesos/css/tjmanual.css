@@ -1,0 +1,102 @@
+//
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+pre {
+  font-size:16px;
+  font-family: Courier;
+  padding-left:8px;
+  padding-right:8px;
+  padding-top:0px;
+  padding-bottom:0px;
+}
+p {
+  margin-top:8px;
+  margin-bottom:8px;
+}
+code {
+  font-size:16px;
+  font-family: Courier;
+}
+.table {
+  background-color:#ABABAB;
+  width:100%;
+}
+.tag {
+  background-color:#E0E0F0;
+  font-size:16px;
+  font-weight:bold;
+  padding-left:8px;
+  padding-right:8px;
+  padding-top:5px;
+  padding-bottom:5px;
+}
+.descr {
+  background-color:#F0F0F0;
+  font-size:16px;
+  padding-left:8px;
+  padding-right:8px;
+  padding-top:5px;
+  padding-bottom:5px;
+}
+.attrtable {
+  background-color:#ABABAB;
+}
+.attrtag {
+  background-color:#F0F0F0;
+  font-family: Courier;
+  padding-left:6px;
+  padding-right:6px;
+  padding-top:3px;
+  padding-bottom:3px;
+}
+.attrdescr {
+  background-color:#F0F0F0;
+  padding-left:6px;
+  padding-right:6px;
+  padding-top:3px;
+  padding-bottom:3px;
+  width:100%;
+}
+.codeframe{
+  border-width:2px;
+  border-color:#ABABAB;
+  border-style:solid;
+  background-color:#F0F0F0;
+  margin-top:8px;
+  margin-bottom:8px;
+}
+.code {
+  padding-left:15px;
+  padding-right:15px;
+  padding-top:0px;
+  padding-bottom:0px;
+}
+div[codesection] {
+  border-width:2px;
+  border-color:#ABABAB;
+  border-style:solid;
+  background-color:#F0F0F0;
+  margin-top:8px;
+  margin-bottom:8px;
+}
+pre[codesection] {
+  padding-left:15px;
+  padding-right:15px;
+  padding-top:0px;
+  padding-bottom:0px;
+}
+

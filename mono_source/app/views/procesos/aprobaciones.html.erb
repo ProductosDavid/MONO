@@ -1,0 +1,95 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<style>
+  .color_rechazado{color:#992312}
+  .color_aprobado{color:#018802}
+  .color_fecha{color:#ddd; font-family: Arial; font-size: 10px;}
+</style>
+<table id="procesosTabla" class="table table-bordered table-striped tablesorter" >
+  <thead>
+  <tr>
+    <th><%= t('.actividad') %></th>
+    <th><%= t('.tareas') %></th>
+    <th><%= t('.tipo_aprobacion') %></th>
+    <th><%= t('.revisiones_programadas') %> </th>
+    <th><%= t('.historico_aprobaciones') %> </th>
+  </tr>
+  </thead>
+  <tbody>
+<%
+   @infotoshow.each do |oneitem|
+%>
+
+
+
+          <%
+             if oneitem["tareas"]
+               oneitem["tareas"].each do |unatarea|
+          %>
+              <tr>
+                <td><%= oneitem["nombre"] %></td>
+                <td><%= unatarea["tarea_nombre"] %></td>
+                <td><%= oneitem["modo_revision"] == "sequ" ? t('.secuencial') :
+                                (oneitem["modo_revision"] == "para" ? t('.paralelo') :
+                                        oneitem["modo_revision"] == "simple" ? t('.simple') : t('.auto') ) %></td>
+                <td>
+                  <%
+                     unatarea["revisiones"].each do |unarevision|
+                     textico = unarevision["aprobado"] == "" ? "[no hecha]" : (unarevision["aprobado"] == "true" ? "[aprobado]" : "[rechazado]")
+                     clase = unarevision["aprobado"] == "" ? "" : (unarevision["aprobado"] == "true" ? "color_aprobado" : "color_rechazado")
+                  %><span class="<%= clase %>"><%= oneitem["modo_revision"] == "sequ" ? unarevision["turno"]+". " : "" %>
+                      <%= unarevision["usuario"] %>
+                    <%= textico %>
+                    </span>
+                      <br>
+                    <%
+                     end
+                  %>
+                </td>
+
+                <td>
+                  <%
+                     unatarea["aprobaciones"].each do |unaaprobacion|
+                       textico2 = unaaprobacion["aprobado"] == "" ? "[no hecha]" : (unaaprobacion["aprobado"] == "true" ? "[aprobado]" : "[rechazado]")
+                       clase2 = unaaprobacion["aprobado"] == "" ? "" : (unaaprobacion["aprobado"] == "true" ? "color_aprobado" : "color_rechazado")
+                  %>
+                      <span class="<%= clase2 %>">
+                      <%= unaaprobacion["usuario"] %>
+                      <%= textico2 %>
+                      </span>
+                      <br>
+                      <span class="color_fecha">
+                       &nbsp; <%= unaaprobacion["fecha_aprobado"] %>
+                      </span>
+                      <br>
+                  <%
+                     end
+                  %>
+                </td>
+              </tr>
+              <%
+               end
+             end
+              %>
+
+
+<%
+   end
+%>
+  </tbody>
+</table>

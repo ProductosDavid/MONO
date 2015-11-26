@@ -1,0 +1,92 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<%#
+# = Vista de diseño de una plantilla
+# Esta vista implementa la ventana de diseño de una plantilla
+%>
+
+<%= javascript_include_tag :'david-crud' %>
+
+<%= stylesheet_link_tag :'plantillas' %>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("#MySplitter").splitter({
+      type: "v",
+      outline: true,
+      minLeft: 350, sizeLeft: 350,
+      resizeToWidth: true,
+      cookie: "vsplitter",
+      accessKey: 'I'
+    });
+
+    $("#TopPane").splitter({
+      type: "v",
+      outline: true,
+      minLeft: 100, sizeLeft: 275, minRight: 100,
+      resizeToWidth: true,
+      cookie: "vsplitter",
+      accessKey: 'I'
+    });
+
+
+  });
+
+                
+
+</script>
+
+<% @titulo = @plantilla.nombre %>
+
+<%= render "shared/encabezado_crud" %>
+<!-- Menu y contenido-->
+<div id="sgw_4_body" class="body sg_scroll_container sgw_entity_query_entity_query_page">
+
+  <div class="contents" id="ext-gen77" >
+
+
+    <%= render "shared/menu_plantillas" %>
+    <div id="layout_content" class="sgw_entity_query_mode seltarget" style="left: 0px; top: 30px; ">
+
+      <div id="MySplitter">
+        <!--div id="TopPane">
+        </div-->
+        <!--Panel izquierdo con scroll inferior -->
+          <div id="LeftPane" style="overflow: scroll; overflow-y: hidden;">
+           <%=  render 'arbol/tree' %>
+          </div>
+
+          <div id="RightPane">
+                <ul id="myTab" class="nav nav-tabs  " style="background: #E6E6E6 "  >
+                    <li class="active"><a href="#detalle" data-toggle="tab"><%= t('.informacion')%></a></li>
+                </ul>
+                <div id="myTabContent" class="tab-content" >
+                    <div class="tab-pane in active" id="detalle" style="background: #F2F7FF " >
+                        <iframe id="frame_actividad"  src="<%= request.protocol + request.host_with_port %>/blank.html" width="100%" height="1000px"  style="background: #F2F7FF " seamless></iframe>
+                    </div>
+                </div>
+          </div>
+    </div>
+
+    </div>
+
+ <%= render "shared/footer" %>
+    
+  </div>
+
+</div>

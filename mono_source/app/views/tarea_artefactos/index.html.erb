@@ -1,0 +1,46 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<h1>Listing tarea_artefactos</h1>
+
+<table>
+  <tr>
+    <th>Id</th>
+    <th>Tarea</th>
+    <th>Artefacto</th>
+    <th>Modo</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @tarea_artefactos.each do |tarea_artefacto| %>
+  <tr>
+    <td><%= tarea_artefacto.id %></td>
+    <td><%= tarea_artefacto.tarea_id %></td>
+    <td><%= tarea_artefacto.artefacto_id %></td>
+    <td><%= tarea_artefacto.modo %></td>
+    <td><%= link_to 'Show', tarea_artefacto %></td>
+    <td><%= link_to 'Edit', edit_tarea_artefacto_path(tarea_artefacto) %></td>
+    <td><%= link_to 'Destroy', tarea_artefacto, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Tarea artefacto', new_tarea_artefacto_path %>

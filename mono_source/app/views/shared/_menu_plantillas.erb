@@ -1,0 +1,38 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+    <!-- Barra de herramientas= Filtrar, buscar, nuevo, eliminar,...-->
+    <%if !@plantilla.nil?%>
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#btn_proceso").click(function(){
+            document.location.href="<%= request.protocol + request.host_with_port %>/plantillas/<%= @plantilla.id %>?locale=es";
+        });
+    });
+    </script>
+
+    <div class="canvas_header">
+      <div id="sgw_2_title" class="title sgw_page_title">
+        <div class="title" page_type="canvas" ui_category="project" id="ext-gen38">
+            <input type="button" name="btn_proceso" id="btn_proceso" value="Recargar &aacute;rbol" class="botonactualizar" style="width: 200px; height: 30px;"/>
+        </div>
+
+      </div>
+    </div>
+    <%end%>

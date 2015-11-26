@@ -1,0 +1,95 @@
+<!--
+    MONO
+    Copyright (C) 2015  Universidad de los Andes
+  
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#btn_programar").click(function(){
+            $("#frame_programar").attr("src","<%= request.protocol + request.host_with_port %>/tareas?proceso_id=<%= @proceso.id %>&locale=<%= params[:locale]%>");
+        });
+
+        $("#btn_reportar").click(function(){
+            $("#ifReporte").attr("src","<%= request.protocol + request.host_with_port %>/reporte/<%= @proceso.id %>/procesos");
+        });
+
+        $("#btn_proceso").click(function(){
+            document.location.href="<%= request.protocol + request.host_with_port %>/procesos/<%= @proceso.id %>?locale=es";
+        });
+
+        $("#btn_validar").click(function(){
+            $("#frame_summary_validate").attr("src","<%= request.protocol + request.host_with_port %>/process_rules/validate_process?proceso_id=<%= @proceso.id %>&publicar=false&locale=es");
+        });
+
+        $("#btn_publicar").click(function(){
+            $("#frame_summary_publish").attr("src","<%= request.protocol + request.host_with_port %>/process_rules/publicar_proceso?proceso_id=<%= @proceso.id %>&publicar=true&locale=es");
+        });
+
+        $("#btn_xpdl").click(function(){
+            $("#frame_summary_publish").attr("src","<%= request.protocol + request.host_with_port %>/procesos/<%= @proceso.id %>/xpdl?locale=es");
+        });
+
+        $("#btn_optimizar").click(function(){
+            $.ajax({
+                url: "<%= request.protocol + request.host_with_port %>/procesos/<%= @proceso.id %>/crear_procesoopt",
+                type: "GET",
+                success: function(data) {
+                    if(data == "true")
+                    {
+                        alert("Proceso Exitoso");
+                    }
+                    else
+                    {
+                        alert("Proceso No Exitoso");
+                    }
+                }
+            });
+            //document.location.href="<%= request.protocol + request.host_with_port %>/procesos/<%= @proceso.id %>?locale=es";
+        });
+    });
+
+</script>
+
+
+  <center>
+    <h3> <%= @proceso.nombre %>   </h3>
+    <span class="title_annotation"></span>
+  </center>
+
+
+    <!--div class="btn-group pull-right " >
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><img runat="server" src="/images/Actualizar.png" width="24px" height="24px" /></button>
+      <ul class="dropdown-menu">
+        <li style="z-index: -1000;"><a href="#" name="btn_proceso" id="btn_proceso">Actualizar proceso</a></li>
+        <li style="z-index: -1000;"><a href="#" name="btn_programar" id="btn_programar">Actualizar programación</a></li>
+        <li style="z-index: -1000;"><a href="#"  name="btn_planear" id="btn_planear">Generar planeación</a></li>
+        <li style="z-index: -1000;"><a href="#" name="btn_reportar" id="btn_reportar">Actualizar reportes</a></li>
+      </ul>
+    </div-->
+  <p>
+    <%= @proceso.descripcion %>
+  </p>
+<br/>
+<div style="text-align: center;">
+  <input type="button" name="btn_proceso" id="btn_proceso" value="Árbol" class="botonactualizar" />
+  <input type="button" name="btn_programar" id="btn_programar" value="Programación" class="botonactualizar" />
+  <input type="button" name="btn_reportar" id="btn_reportar" value="Actualizar Reporte" class="botonactualizar" />
+  <!--input type="button" name="btn_planear" id="btn_planear" value="Generar planeación" /-->
+  <!--input type="button" name="btn_planear" id="btn_xpdl" value="Generar XPDL" /-->
+  <!--input type="button" name="btn_optimizar" id="btn_optimizar" value="Optimizar" /-->
+
+
+</div>
