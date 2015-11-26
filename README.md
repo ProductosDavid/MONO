@@ -4,7 +4,7 @@ El Sistema MONO es una iniciativa que surge como un apoyo a la industria de cont
 
 MONO facilita esto, permitiéndoles integrar, controlar y optimizar sus procesos de desarrollo, y así como también, hacer seguimiento en la utilización de los recursos, los tiempos de desarrollo, las responsabilidades y los costos. 
 
-# MONO como Software
+## MONO como Software
 
 Mono es un software open source (código abierto), bajo licencia GPLv3, diseñado para integrar, controlar y optimizar procesos de desarrollo de contenidos digitales, además de hacer seguimiento en la utilización de recursos, tiempos de desarrollo, responsabilidades y costos de proyectos que son ejecutados de forma colaborativa entre distintas empresas aliadas.
 
@@ -51,18 +51,18 @@ Proyecto MONO-DAVID.
 Proyecto en colaboración con Colciencias.
 
 ### Directores
-Product Owner: Pablo Alejandro Figueroa  - pfiguero@uniandes.edu.co
-Architecture Owner: Dario Ernesto Correal Torres - dcorrel@uniandes.edu.co
-Scrum Master: Oscar Fernando Gonzales Rojas - o-gonza1@uniandes.edu.co
+- Product Owner: Pablo Alejandro Figueroa  - pfiguero@uniandes.edu.co
+- Architecture Owner: Dario Ernesto Correal Torres - dcorrel@uniandes.edu.co
+- Scrum Master: Oscar Fernando Gonzales Rojas - o-gonza1@uniandes.edu.co
 
 ### Desarrolladores
-Jose Luis Dorado Collazos - jl.dorado59@uniandes.edu.co
-Leidy Alexandra Lozano Jacome - la.lozano51@uniandes.edu.co
-Juan Manuel Moreno Beltran - jm.moreno743@uniandes.edu.co
-Ramiro Serrano Vergel - r.serrano47@uniandes.edu.co
-Nixon Alonso Duarte Acosta - na.duarte60@uniandes.edu.co  
-Andres Castillo Aguirre - a.castillo12@uniandes.edu.co
-Diego Andres Hoyos Mancera - da.hoyos10@uniandes.edu.co
-Luis Felipe Mendivelso Osorio - lf.mendivelso10@uniandes.edu.co
-Manuel Alejandro Camargo - ma.camargo11@uniandes.edu.co
-Grabiel Jaime Lopez - gj.lopez10@uniandes.edu.co
+- Jose Luis Dorado Collazos - jl.dorado59@uniandes.edu.co
+- Leidy Alexandra Lozano Jacome - la.lozano51@uniandes.edu.co
+- Juan Manuel Moreno Beltran - jm.moreno743@uniandes.edu.co
+- Ramiro Serrano Vergel - r.serrano47@uniandes.edu.co
+- Nixon Alonso Duarte Acosta - na.duarte60@uniandes.edu.co  
+- Andres Castillo Aguirre - a.castillo12@uniandes.edu.co
+- Diego Andres Hoyos Mancera - da.hoyos10@uniandes.edu.co
+- Luis Felipe Mendivelso Osorio - lf.mendivelso10@uniandes.edu.co
+- Manuel Alejandro Camargo - ma.camargo11@uniandes.edu.co
+- Grabiel Jaime Lopez - gj.lopez10@uniandes.edu.co
